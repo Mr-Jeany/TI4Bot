@@ -11,74 +11,12 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
-from utils import AdditionalInfoCallback, Leaders
+from builders import build_flagship, build_mech, build_pn, MessageParts, build_fsu
+from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 
 dp = Dispatcher()
-
-async def build_flagship(faction_id):
-    faction_dict = await get_faction(faction_id)
-    flagship = faction_dict["flagship"]
-
-    name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji> <b>{flagship['name']}</b> (Флагман)"
-
-    abilities_part = ""
-    for ability in flagship["abilities"]:
-        abilities_part += f"— {ability}\n"
-    abilities_part.rstrip()
-
-    built = f"""
-{name_part}
-{flagship["description"]}
-{abilities_part}
-Цена: {flagship["cost"]} | Бой: {flagship["combat"]} | Полёт: {flagship["move"]} | Место: {flagship["capacity"]}
-"""
-
-    return built
-
-async def build_mech(faction_id):
-    faction_dict = await get_faction(faction_id)
-    mech = faction_dict["mech"]
-
-    name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji> <b>{mech['name']}</b> (Мех)"
-
-    abilities_part = ""
-    for ability in mech["abilities"]:
-        abilities_part += f"— {ability}\n"
-    abilities_part.rstrip()
-
-    built = f"""
-{name_part}
-{mech["description"]}
-{abilities_part}
-Цена: {mech["cost"]} | Бой: {mech["combat"]}
-"""
-
-    return built
-
-async def build_pn(faction_id):
-    faction_dict = await get_faction(faction_id)
-    pn = faction_dict["promissory_note"]
-
-    name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji> <b>{pn['name']}</b> (Фракционное обещание)"
-
-    built = f"""
-{name_part}
-{pn["description"]}
-"""
-
-    return built
-
-async def get_faction(faction_id) -> Dict[Any, Any] | None:
-    factions = json.load(open("factions.json", encoding="utf-8"))
-
-    for faction in factions["items"]:
-        if faction["id"] == faction_id:
-            return faction
-
-    return None
-
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -149,6 +87,8 @@ async def search_faction_handler(message: Message) -> None:
     faction_technologies_part.rstrip()
     ### End of Faction Technologies Part
 
+    faction_specific_units, fsu_buttons = await MessageParts.faction_specific_units(faction_name)
+
     built = f"""
 {name_part}
 
@@ -159,20 +99,49 @@ async def search_faction_handler(message: Message) -> None:
 
 <b>— Способности —</b>
 {abilities_part}
-
+{f"\n<b>— Особые отряды —</b>\n{faction_specific_units}\n" if faction_specific_units else ""}
 <b>— Фракционные технологии —</b>
 {faction_technologies_part}"""
 
     ### Extra Info / Buttons
-    flagship = InlineKeyboardButton(text="Флагман", callback_data=AdditionalInfoCallback(type="flagship", faction="creuss").pack())
-    mech = InlineKeyboardButton(text="Мех", callback_data=AdditionalInfoCallback(type="mech", faction="creuss").pack())
-    pn = InlineKeyboardButton(text="Фракционное обещание", callback_data=AdditionalInfoCallback(type="prom_note", faction="creuss").pack())
+    flagship = InlineKeyboardButton(text=f"Флагман",
+                                    callback_data=AdditionalInfoCallback(type="flagship", faction=faction_name).pack(),
+                                    icon_custom_emoji_id=UnitsEmoji.flagship.id)
 
-    agent = InlineKeyboardButton(text="Агент", callback_data=AdditionalInfoCallback(type="agent", faction="creuss").pack())
-    commander = InlineKeyboardButton(text="Командир", callback_data=AdditionalInfoCallback(type="commander", faction="creuss").pack())
-    hero = InlineKeyboardButton(text="Герой", callback_data=AdditionalInfoCallback(type="hero", faction="creuss").pack())
+    mech = InlineKeyboardButton(text="Мех",
+                                callback_data=AdditionalInfoCallback(type="mech", faction=faction_name).pack(),
+                                icon_custom_emoji_id=UnitsEmoji.mech.id)
 
-    keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[[flagship, mech], [pn], [agent, commander, hero]])
+    pn = InlineKeyboardButton(text="Фракционное обещание",
+                              callback_data=AdditionalInfoCallback(type="prom_note", faction=faction_name).pack(),
+                              icon_custom_emoji_id=CardsEmoji.pn.id)
+
+
+    agent = InlineKeyboardButton(text="Агент",
+                                 callback_data=AdditionalInfoCallback(type="agent", faction=faction_name).pack(),
+                                 icon_custom_emoji_id=LeadersEmoji.agent.id)
+
+    commander = InlineKeyboardButton(text="Командир",
+                                     callback_data=AdditionalInfoCallback(type="commander", faction=faction_name).pack(),
+                                     icon_custom_emoji_id=LeadersEmoji.commander.id)
+
+    hero = InlineKeyboardButton(text="Герой",
+                                callback_data=AdditionalInfoCallback(type="hero", faction=faction_name).pack(),
+                                icon_custom_emoji_id=LeadersEmoji.hero.id)
+
+    if faction_specific_units:
+        custom_units = []
+
+        for unit in fsu_buttons:
+            custom_units.append(
+                InlineKeyboardButton(text=unit["name"],
+                                     callback_data=AdditionalInfoCallback(type=unit["type"], faction=faction_name).pack(),
+                                     icon_custom_emoji_id=unit["icon_custom_emoji_id"])
+            )
+
+        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[[flagship, mech], custom_units, [pn], [agent, commander, hero]])
+    else:
+        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[[flagship, mech], [pn], [agent, commander, hero]])
     ### Extra Info / Buttons End
 
     # Length test, if needed:
@@ -180,7 +149,7 @@ async def search_faction_handler(message: Message) -> None:
     await message.answer(built, reply_markup=keyboard_inline)
 
 @dp.callback_query(AdditionalInfoCallback.filter())
-async def unit_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
+async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
     await callback_query.answer()
 
     callback_type = callback_data.type
@@ -210,6 +179,12 @@ async def unit_callback_handler(callback_query: CallbackQuery, callback_data: Ad
         hero = await Leaders.build_hero(faction)
         await callback_query.message.edit_text(hero)
 
+    elif callback_type in ["warsun"]:
+        unit = await build_fsu(faction, callback_type)
+        await callback_query.message.edit_text(
+            unit
+        )
+
     else:
         await callback_query.message.edit_text(f"ошибочка где-то")
 
@@ -222,7 +197,7 @@ async def catch_emoji_handler(message: Message) -> None:
             custom_emoji_id = entity.custom_emoji_id
             custom_emoji_symbol = message.text.split(" ")[1]
 
-            await message.answer(f'...<tg-emoji emoji-id="{custom_emoji_id}">{custom_emoji_symbol}</tg-emoji>...\n{custom_emoji_id} - {custom_emoji_symbol}')
+            await message.answer(f'...<tg-emoji emoji-id="{custom_emoji_id}">{custom_emoji_symbol}</tg-emoji>...\n<code>{custom_emoji_id}</code> - <code>{custom_emoji_symbol}</code>')
 
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
