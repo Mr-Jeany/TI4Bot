@@ -1,9 +1,7 @@
 import asyncio
-import json
 import logging
 import os
 import sys
-from typing import Dict, Any
 
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
