@@ -104,30 +104,34 @@ async def search_faction_handler(message: Message) -> None:
 {faction_technologies_part}"""
 
     ### Extra Info / Buttons
-    flagship = InlineKeyboardButton(text=f"Флагман",
-                                    callback_data=AdditionalInfoCallback(type="flagship", faction=faction_name).pack(),
-                                    icon_custom_emoji_id=UnitsEmoji.flagship.id)
+    extra_info_values = {
+        UnitsEmoji: {
+            "flagship": "Флагман",
+            "mech": "Мех"
+        },
 
-    mech = InlineKeyboardButton(text="Мех",
-                                callback_data=AdditionalInfoCallback(type="mech", faction=faction_name).pack(),
-                                icon_custom_emoji_id=UnitsEmoji.mech.id)
+        CardsEmoji: {
+            "prom_note": "Фракционное обещание"
+        },
 
-    pn = InlineKeyboardButton(text="Фракционное обещание",
-                              callback_data=AdditionalInfoCallback(type="prom_note", faction=faction_name).pack(),
-                              icon_custom_emoji_id=CardsEmoji.pn.id)
+        LeadersEmoji: {
+            "agent": "Агент",
+            "commander": "Командир",
+            "hero": "Герой"
+        }
+    }
 
+    buttons = []
+    for extra_info_emoji, extra_info in extra_info_values.items():
+        button_row = []
+        for extra_info_id, extra_info_name in extra_info.items():
+            button_row.append(
+                InlineKeyboardButton(text=extra_info_name,
+                                     callback_data=AdditionalInfoCallback(type=extra_info_id, faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(extra_info_emoji, extra_info_id).id)
+            )
 
-    agent = InlineKeyboardButton(text="Агент",
-                                 callback_data=AdditionalInfoCallback(type="agent", faction=faction_name).pack(),
-                                 icon_custom_emoji_id=LeadersEmoji.agent.id)
-
-    commander = InlineKeyboardButton(text="Командир",
-                                     callback_data=AdditionalInfoCallback(type="commander", faction=faction_name).pack(),
-                                     icon_custom_emoji_id=LeadersEmoji.commander.id)
-
-    hero = InlineKeyboardButton(text="Герой",
-                                callback_data=AdditionalInfoCallback(type="hero", faction=faction_name).pack(),
-                                icon_custom_emoji_id=LeadersEmoji.hero.id)
+        buttons.append(button_row)
 
     if faction_specific_units:
         custom_units = []
@@ -139,9 +143,10 @@ async def search_faction_handler(message: Message) -> None:
                                      icon_custom_emoji_id=unit["icon_custom_emoji_id"])
             )
 
-        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[[flagship, mech], custom_units, [pn], [agent, commander, hero]])
+        buttons.insert(1, custom_units)
+        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
     else:
-        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=[[flagship, mech], [pn], [agent, commander, hero]])
+        keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
     ### Extra Info / Buttons End
 
     # Length test, if needed:

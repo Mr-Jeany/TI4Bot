@@ -47,7 +47,7 @@ async def build_pn(faction_id):
     faction_dict = await get_faction(faction_id)
     pn = faction_dict["promissory_note"]
 
-    name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji>{CardsEmoji.pn} <b>{pn['name']}</b>"
+    name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji>{CardsEmoji.prom_note} <b>{pn['name']}</b>"
 
     built = f"""
 {name_part}

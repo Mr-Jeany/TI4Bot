@@ -36,7 +36,7 @@ class UnitsEmoji:
 
 
 class CardsEmoji:
-    pn = Emoji(
+    prom_note = Emoji(
         "5229063115978612584",
         "🎫"
     )
