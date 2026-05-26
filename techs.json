@@ -1,0 +1,14 @@
+{
+    "items": [
+        {
+            "id": "neural_motivator",
+            "id_short": "nm",
+            "color": "green",
+            "faction_specific": null,
+            "name": "Нейромотиваторы",
+            "description": "Во время фазы статуса вы берете 2 карты действий вместо 1",
+
+            "prerequisites": {}
+        }
+    ]
+}

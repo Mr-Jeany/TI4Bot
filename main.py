@@ -10,6 +10,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
 from builders import build_flagship, build_mech, build_pn, MessageParts, build_fsu
+from technologies import get_technology
 from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
@@ -23,6 +24,14 @@ async def command_start_handler(message: Message) -> None:
     """
     await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
 
+@dp.message(Command("tech"))
+async def search_tech_handler(message: Message) -> None:
+    message_text = message.text
+    arguments = message_text.split(" ", 1)[1].split(" ")
+    tech_name = arguments[0]
+    tech_object = await get_technology(tech_id_short=tech_name)
+
+    await message.answer(tech_object.full)
 
 @dp.message(Command("faction"))
 async def search_faction_handler(message: Message) -> None:
