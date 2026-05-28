@@ -127,7 +127,8 @@
 
             "planet": {
                 "name": "Муаат",
-                "value": "4/1"
+                "resource": 4,
+                "influence": 1
             },
             "starting_technologies": [
                 {

@@ -71,7 +71,7 @@ class CustomEmoji:
         return f"<tg-emoji emoji-id='{self.custom_emoji_id}'>{self.base_emoji}</tg-emoji>"
 
 async def get_faction(faction_id) -> Dict[Any, Any] | None:
-    factions = json.load(open("factions.json", encoding="utf-8"))
+    factions = json.load(open("data/factions.json", encoding="utf-8"))
 
     for faction in factions["items"]:
         if faction["id"] == faction_id:
