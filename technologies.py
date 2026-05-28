@@ -10,6 +10,12 @@ class Technology:
         self.color = color
         self.color_icon = getattr(TechnologySpeciality, color)
 
+        self.faction = None
+        self.is_faction = False
+        if faction_specific:
+            self.faction = faction_specific
+            self.is_faction = True
+
         self.name = name
         self.description = description
         self.prerequisites = prerequisites
@@ -31,10 +37,10 @@ class Technology:
 
 
         return f"""
-        <b>{self.small_text}</b>
+        <b>{self.small_text}</b> {f"\n<i>{self.faction}</i>\n" if self.is_faction else ""}
 {self.description}
 
-Требования: {prereq_part}
+<b>Требования:</b> {prereq_part}
 """
 
 
