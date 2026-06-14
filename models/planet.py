@@ -7,3 +7,6 @@ class Planet:
         self.name = name
         self.resource = resource
         self.influence = influence
+
+    def __str__(self):
+        return f"{self.name} ({self.resource}/{self.influence})"

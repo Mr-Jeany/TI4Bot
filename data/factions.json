@@ -9,10 +9,13 @@
                 "base_emoji": "\uD83D\uDC7E"
             },
 
-            "planet": {
-                "name": "Креусс",
-                "value": "4/2"
-            },
+            "planets": [
+                {
+                    "name": "Креусс",
+                    "resource": 4,
+                    "influence": 2
+                }
+            ],
             "starting_technologies": [
                 {
                     "color": "blue",
@@ -21,22 +24,27 @@
             ],
             "starting_units": [
                 {
+                    "id": "carrier",
                     "type": "Транспортник",
                     "count": 1
                 },
                 {
+                    "id": "cruiser",
                     "type": "Эсминец",
                     "count": 2
                 },
                 {
+                    "id": "fighter",
                     "type": "Истребитель",
                     "count": 2
                 },
                 {
+                    "id": "infantry",
                     "type": "Пехота",
                     "count": 4
                 },
                 {
+                    "id": "space_dock",
                     "type": "База",
                     "count": 1
                 }
@@ -81,6 +89,7 @@
                 "abilities": ["Поглощение урона"],
                 "cost": 8,
                 "combat": 5,
+                "number_of_attacks": 1,
                 "move": 1,
                 "capacity": 3
             },
@@ -210,7 +219,8 @@
                 "description": "ДЕЙСТВИЕ: потратьте 1 жетон из вашего стратегического резерва, чтобы разместить 1 крейсер в системе с этим отрядом.",
                 "abilities": ["Поглощение урона"],
                 "cost": 8,
-                "combat": "5x2",
+                "combat": 5,
+                "number_of_attacks": 2,
                 "move": 1,
                 "capacity": 3
             },

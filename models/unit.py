@@ -1,14 +1,16 @@
 from enum import Enum
 
+from utils import UnitsEmoji
 
-class UnitType(Enum, str):
+
+class UnitType(str, Enum):
     CARRIER = "carrier"
     CRUISER = "cruiser"
     DESTROYER = "destroyer"
     DREADNOUGHT = "dreadnaught"
     FIGHTER = "fighter"
     FLAGSHIP = "flagship"
-    WAR_SUN = "war_sun"
+    WARSUN = "warsun"
 
     INFANTRY = "infantry"
     MECH = "mech"
@@ -23,7 +25,7 @@ class Unit:
 
     ### Basic information
     name: str
-    description: str # Usually has extra ability info like "disables space cannon..."
+    description: str | None # Usually has extra ability info like "disables space cannon..."
 
     abilities: list
     cost: int
@@ -37,9 +39,9 @@ class Unit:
     is_faction_specific: bool = False
     faction: str | None
 
-    def __init__(self, id: str, unit_type: UnitType, name: str, description: str, abilities: list, cost: int,
+    def __init__(self, id: str, unit_type: UnitType, name: str, description: str | None, abilities: list, cost: int,
                  combat: int, number_of_attacks: int,
-                 move: int | None = None, capacity: int | None = None, prerequisites: int | None = None,
+                 move: int | None = None, capacity: int | None = None, prerequisites: dict | None = None,
                  is_faction_specific: bool = False, faction: str | None = None):
         self.id = id
         self.unit_type = unit_type
@@ -61,3 +63,9 @@ class Unit:
     def average_hits_per_round(self):
         average_one_dice = 1 - ((self.combat - 1) / 10)
         return average_one_dice*self.number_of_attacks
+
+    @property
+    def short(self):
+        emoji = getattr(UnitsEmoji, self.unit_type.name.lower(), None)
+
+        return f"{emoji if emoji else ""} {self.name}"

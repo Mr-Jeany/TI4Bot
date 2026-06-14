@@ -10,7 +10,10 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
 from builders import build_flagship, build_mech, build_pn, MessageParts, build_fsu
+from models.planet import Planet
+from models.unit import Unit, UnitType
 from technologies import get_technology
+from utilities.loader import load_faction
 from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
@@ -33,6 +36,25 @@ async def search_tech_handler(message: Message) -> None:
 
     await message.answer(tech_object.full)
 
+@dp.message(Command("unit"))
+async def search_unit_handler(message: Message) -> None:
+    message_text = message.text
+    arguments = message_text.split(" ", 1)[1].split(" ")
+    unit_name = arguments[0]
+
+    unit = Unit(
+        id=unit_name,
+        unit_type=UnitType.WARSUN,
+        name="Unit Name",
+        description="Description",
+        abilities=[],
+        cost=1,
+        combat=2,
+        number_of_attacks=1
+    )
+
+    await message.answer(unit.short)
+
 @dp.message(Command("faction"))
 async def search_faction_handler(message: Message) -> None:
     message_text = message.text
@@ -42,7 +64,10 @@ async def search_faction_handler(message: Message) -> None:
     faction_dict = await get_faction(faction_name)
 
     name_part = f"<tg-emoji emoji-id='{faction_dict['emoji']['id']}'>{faction_dict['emoji']['base_emoji']}</tg-emoji> <b>{faction_dict['name']}</b>"
-    planet_part = f"{faction_dict['planet']['name']} ({faction_dict['planet']['value']})"
+
+    home_planet = Planet(**faction_dict['planet'])
+
+    planet_part = f"{home_planet.name} ({home_planet.resource}/{home_planet.influence})"
 
     ### Starting Tech Part
     starting_technologies = faction_dict['starting_technologies']
@@ -93,8 +118,11 @@ async def search_faction_handler(message: Message) -> None:
 
     faction_technologies_part.rstrip()
     ### End of Faction Technologies Part
-
-    faction_specific_units, fsu_buttons = await MessageParts.faction_specific_units(faction_name)
+    fsu = await MessageParts.faction_specific_units(faction_name)
+    if fsu:
+        faction_specific_units, fsu_buttons = await MessageParts.faction_specific_units(faction_name)
+    else:
+        faction_specific_units = None
 
     built = f"""
 {name_part}
@@ -159,6 +187,31 @@ async def search_faction_handler(message: Message) -> None:
     # Length test, if needed:
     # await message.answer(str(len(built)))
     await message.answer(built, reply_markup=keyboard_inline)
+
+@dp.message(Command("flagship"))
+async def flagship_handler(message: Message) -> None:
+    message_text = message.text
+    arguments = message_text.split(" ", 1)[1].split(" ")
+    faction_name = arguments[0]
+
+    faction_dict = await get_faction(faction_name)
+
+    flagship = Unit(f"{faction_name}_{UnitType.FLAGSHIP.lower()}", UnitType.FLAGSHIP, **faction_dict["flagship"])
+
+    await message.answer(f"{flagship.short}")
+
+@dp.message(Command("load"))
+async def load_faction_handler(message: Message) -> None:
+    message_text = message.text
+    arguments = message_text.split(" ", 1)[1].split(" ")
+    faction_name = arguments[0]
+
+    faction_dict = await get_faction(faction_name)
+
+    faction_object = await load_faction(faction_name, faction_dict)
+
+    await message.answer(faction_object.full_text)
+    print(faction_object.header)
 
 @dp.callback_query(AdditionalInfoCallback.filter())
 async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
