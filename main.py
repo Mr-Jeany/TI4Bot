@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import os
 import random
@@ -14,9 +15,11 @@ from builders import build_flagship, build_mech, build_pn, MessageParts, build_f
 from models.planet import Planet
 from models.unit import Unit, UnitType
 from technologies import get_technology
-from utilities.loader import load_faction
+from utilities.loader import load_faction, load_all_factions
 from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
 from tabulate import tabulate
+
+FACTIONS: dict | None = None
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 
@@ -38,48 +41,14 @@ async def search_tech_handler(message: Message) -> None:
 
     await message.answer(tech_object.full)
 
-@dp.message(Command("unit"))
-async def search_unit_handler(message: Message) -> None:
-    message_text = message.text
-    arguments = message_text.split(" ", 1)[1].split(" ")
-    unit_name = arguments[0]
 
-    unit = Unit(
-        id=unit_name,
-        unit_type=UnitType.WARSUN,
-        name="Unit Name",
-        description="Description",
-        abilities=[],
-        cost=1,
-        combat=2,
-        number_of_attacks=1
-    )
-
-    await message.answer(unit.short)
-
-
-@dp.message(Command("flagship"))
-async def flagship_handler(message: Message) -> None:
-    message_text = message.text
-    arguments = message_text.split(" ", 1)[1].split(" ")
-    faction_name = arguments[0]
-
-    faction_dict = await get_faction(faction_name)
-
-    flagship = Unit(f"{faction_name}_{UnitType.FLAGSHIP.lower()}", UnitType.FLAGSHIP, **faction_dict["flagship"])
-
-    await message.answer(f"{flagship.short}")
-
-
-@dp.message(Command("faction"))
+@dp.message(Command("faction", "f"))
 async def load_faction_handler(message: Message) -> None:
     message_text = message.text
     arguments = message_text.split(" ", 1)[1].split(" ")
     faction_name = arguments[0]
 
-    faction_dict = await get_faction(faction_name)
-
-    faction_object = await load_faction(faction_name, faction_dict)
+    faction_object = FACTIONS[faction_name]
 
     buttons = []
 
@@ -204,10 +173,13 @@ async def catch_emoji_handler(message: Message) -> None:
 
 
 async def main() -> None:
+    global FACTIONS
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     # TODO: Add loader for all faction and in the future for all techs etc etc
+
+    FACTIONS = await load_all_factions(json.load(open("data/factions.json", encoding="utf-8")))
 
     # And the run events dispatching
     await dp.start_polling(bot)

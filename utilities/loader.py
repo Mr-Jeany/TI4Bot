@@ -1,3 +1,5 @@
+import asyncio
+
 from models.ability import Ability
 from models.faction import Faction
 from models.leader import Leader, LeaderTypes
@@ -5,11 +7,21 @@ from models.planet import Planet
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
 from models.unit import Unit, UnitType
-from utilities.static_objects import StaticUnits
 from utils import CustomEmoji
 
+async def load_all_factions(faction_json_converted: dict) -> dict[str, Faction]:
+    async def load_one(item: dict):
+        faction_id = item["id"]
+        faction = await asyncio.to_thread(load_faction, faction_id, item)
+        return faction_id, faction
 
-async def load_faction(faction_id, faction_dict) -> Faction:
+    results = await asyncio.gather(
+        *(load_one(item) for item in faction_json_converted["items"])
+    )
+
+    return dict(results)
+
+def load_faction(faction_id, faction_dict) -> Faction:
     # Removing unnecessary keys and assigning them to variables
     faction_dict.pop("id")
     name = faction_dict.pop("name")
