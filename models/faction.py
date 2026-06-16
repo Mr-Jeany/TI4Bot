@@ -18,7 +18,7 @@ class Faction:
     faction_specific_units: list | None
     faction_technologies: list[Technology]
     flagship: Unit
-    mech: dict
+    mech: Unit
     promissory_note: dict
 
     agent: dict
@@ -37,6 +37,7 @@ class Faction:
                  faction_specific_units: list[Unit] | None,
 
                  flagship: Unit,
+                 mech: Unit,
 
                  **kwargs):
         # Correct way to create
@@ -53,13 +54,11 @@ class Faction:
         self.faction_specific_units = faction_specific_units
 
         self.flagship = flagship
+        self.mech = mech
 
         # Raw
         self.starting_technologies = kwargs.pop("starting_technologies")
 
-
-
-        self.mech = kwargs.pop("mech")
         self.promissory_note = kwargs.pop("promissory_note")
 
         self.agent = kwargs.pop("agent")

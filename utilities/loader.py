@@ -71,10 +71,18 @@ async def load_faction(faction_id, faction_dict) -> Faction:
         faction_specific_units = None
     else:
         for unit in fsu_list:
-            unit.pop("upgrade", None)
+            upgrade = unit.pop("upgrade", None)
+
+            if upgrade:
+                upgrade_unit = Unit(id=upgrade["id"],
+                                     unit_type=UnitType(upgrade["type"]),
+                                     **upgrade)
+            else:
+                upgrade_unit = None
 
             new_unit = Unit(id=unit.pop("id"),
                             unit_type=UnitType(unit.pop("type")),
+                            upgrade=upgrade_unit,
                             **unit)
 
             faction_specific_units.append(new_unit)
@@ -84,6 +92,11 @@ async def load_faction(faction_id, faction_dict) -> Faction:
     flagship = Unit(id=f"{faction_id}_flagship",
                     unit_type=UnitType.FLAGSHIP,
                     **faction_dict.pop("flagship"))
+
+    # Mech
+    mech = Unit(id=f"{faction_id}_mech",
+                unit_type=UnitType.MECH,
+                **faction_dict.pop("mech"))
 
     baking_faction = Faction(
         id=faction_id,

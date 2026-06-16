@@ -39,10 +39,13 @@ class Unit:
     is_faction_specific: bool = False
     faction: str | None
 
+    upgrade: Unit | None
+
     def __init__(self, id: str, unit_type: UnitType, name: str, description: str | None, abilities: list, cost: int,
                  combat: int, number_of_attacks: int,
                  move: int | None = None, capacity: int | None = None, prerequisites: dict | None = None,
-                 is_faction_specific: bool = False, faction: str | None = None):
+                 is_faction_specific: bool = False, faction: str | None = None,
+                 upgrade: Unit | None = None):
         self.id = id
         self.unit_type = unit_type
         self.name = name
@@ -58,6 +61,8 @@ class Unit:
         self.prerequisites = prerequisites
         self.is_faction_specific = is_faction_specific
         self.faction = faction
+
+        self.upgrade = upgrade
 
     @property
     def average_hits_per_round(self):
