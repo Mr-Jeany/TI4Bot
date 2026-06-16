@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import random
 import sys
 
 from aiogram import Bot, Dispatcher, html
@@ -212,6 +213,16 @@ async def load_faction_handler(message: Message) -> None:
 
     await message.answer(faction_object.full_text)
     print(faction_object.header)
+
+# Command for getting ban order
+@dp.message(Command("shuffle"))
+async def shuffle_things_handler(message: Message) -> None:
+    message_text = message.text
+    arguments = message_text.split(" ", 1)[1].split(";")
+
+    random.shuffle(arguments)
+
+    await message.answer(f"Случайный порядок:\n- {'\n- '.join(arguments)}")
 
 @dp.callback_query(AdditionalInfoCallback.filter())
 async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
