@@ -8,7 +8,7 @@ from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputRichMessage
 
 from builders import build_flagship, build_mech, build_pn, MessageParts, build_fsu
 from models.planet import Planet
@@ -16,6 +16,7 @@ from models.unit import Unit, UnitType
 from technologies import get_technology
 from utilities.loader import load_faction
 from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
+from tabulate import tabulate
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 
@@ -55,6 +56,7 @@ async def search_unit_handler(message: Message) -> None:
     )
 
     await message.answer(unit.short)
+
 
 @dp.message(Command("faction"))
 async def search_faction_handler(message: Message) -> None:
@@ -189,6 +191,7 @@ async def search_faction_handler(message: Message) -> None:
     # await message.answer(str(len(built)))
     await message.answer(built, reply_markup=keyboard_inline)
 
+
 @dp.message(Command("flagship"))
 async def flagship_handler(message: Message) -> None:
     message_text = message.text
@@ -201,6 +204,7 @@ async def flagship_handler(message: Message) -> None:
 
     await message.answer(f"{flagship.short}")
 
+
 @dp.message(Command("load"))
 async def load_faction_handler(message: Message) -> None:
     message_text = message.text
@@ -212,7 +216,20 @@ async def load_faction_handler(message: Message) -> None:
     faction_object = await load_faction(faction_name, faction_dict)
 
     await message.answer(faction_object.full_text)
-    print(faction_object.header)
+
+
+@dp.message(Command("test"))
+async def test_handler(message: Message) -> None:
+
+    test_table = tabulate(
+        [["first", "second"], ["one more"]],
+        headers=["header 1", "header 2"],
+        tablefmt="pipe"
+    )
+
+    msg = InputRichMessage(markdown=test_table)
+    await message.answer_rich(msg)
+
 
 # Command for getting ban order
 @dp.message(Command("shuffle"))
@@ -223,6 +240,7 @@ async def shuffle_things_handler(message: Message) -> None:
     random.shuffle(arguments)
 
     await message.answer(f"Случайный порядок:\n- {'\n- '.join(arguments)}")
+
 
 @dp.callback_query(AdditionalInfoCallback.filter())
 async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
@@ -264,6 +282,7 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
     else:
         await callback_query.message.edit_text(f"ошибочка где-то")
 
+
 @dp.message(Command("catch_emoji"))
 async def catch_emoji_handler(message: Message) -> None:
     print(message.entities)
@@ -274,6 +293,7 @@ async def catch_emoji_handler(message: Message) -> None:
             custom_emoji_symbol = message.text.split(" ")[1]
 
             await message.answer(f'...<tg-emoji emoji-id="{custom_emoji_id}">{custom_emoji_symbol}</tg-emoji>...\n<code>{custom_emoji_id}</code> - <code>{custom_emoji_symbol}</code>')
+
 
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls

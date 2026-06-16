@@ -1,5 +1,6 @@
 import json
 
+from models.ability import Ability
 from models.emoji import CustomEmoji, UnitsEmoji
 from models.planet import Planet
 from models.technology import Technology
@@ -13,7 +14,7 @@ class Faction:
     planets: list[Planet]
     starting_technologies: list[Technology]
     starting_units: list
-    abilities: list
+    abilities: list[Ability] | None
     faction_specific_units: list | None
     faction_technologies: list[Technology]
     flagship: Unit
@@ -31,6 +32,9 @@ class Faction:
                  emoji: CustomEmoji,
                  planets: list[Planet],
                  starting_units: list,
+                 abilities: list[Ability] | None,
+                 faction_technologies: list[Technology] | None,
+                 faction_specific_units: list[Unit] | None,
 
                  flagship: Unit,
 
@@ -43,16 +47,18 @@ class Faction:
         self.planets = planets
         self.starting_units = starting_units
 
+        self.abilities = abilities
+        self.faction_technologies = faction_technologies
+
+        self.faction_specific_units = faction_specific_units
+
+        self.flagship = flagship
+
         # Raw
         self.starting_technologies = kwargs.pop("starting_technologies")
 
-        self.abilities = kwargs.pop("abilities")
 
-        self.faction_specific_units = kwargs.pop("faction_specific_units", None)
 
-        self.faction_technologies = kwargs.pop("faction_technologies")
-
-        self.flagship = flagship
         self.mech = kwargs.pop("mech")
         self.promissory_note = kwargs.pop("promissory_note")
 
@@ -72,9 +78,9 @@ class Faction:
         planets = "<b>Начальные планеты:</b> "
 
         for planet in self.planets:
-            planets += f"{planet};"
+            planets += f"{planet}; "
 
-        planets = planets[:-1]
+        planets = planets[:-2]
 
         units = "<b>Начальные отряды: </b>"
 
@@ -86,5 +92,59 @@ class Faction:
         return f"{buffer}"
 
     @property
+    def abilities_text(self) -> str | None:
+        if not self.abilities:
+            return None
+
+        buffer = "<b>— Способности —</b>\n"
+        for ability in self.abilities:
+            buffer += f"{ability}\n\n"
+
+        buffer = buffer.rstrip()
+
+        return buffer
+
+    @property
+    def faction_technologies_text(self) -> str | None:
+        if not self.faction_technologies:
+            return None
+
+        buffer = "<b>— Фракционные технологии —</b>"
+
+        for tech in self.faction_technologies:
+            buffer += f"\n{tech.faction_info}\n"
+
+        buffer  = buffer.rstrip()
+
+        return buffer
+
+    @property
+    def faction_specific_units_text(self) -> str | None:
+        if not self.faction_specific_units:
+            return None
+
+        buffer = "<b>— Особые отряды —</b>"
+
+        for unit in self.faction_specific_units:
+            buffer += f"\n{unit.short}\n"
+
+        buffer = buffer.rstrip()
+
+        return buffer
+
+    @property
     def full_text(self) -> str:
-        return f"{self.header}\n\n{self.subheader}"
+        buffer = f"""
+{self.header}
+
+{self.subheader}
+
+{self.abilities_text}
+"""
+        if self.faction_technologies_text:
+            buffer += f"\n{self.faction_technologies_text}\n"
+
+        if self.faction_specific_units_text:
+            buffer += f"\n{self.faction_specific_units_text}"
+
+        return buffer

@@ -20,7 +20,7 @@ class Technology:
         self.prerequisites = prerequisites
 
     @property
-    def small_text(self) -> str:
+    def title(self) -> str:
         return f"{self.color_icon} {self.name}"
 
     @property
@@ -36,8 +36,12 @@ class Technology:
 
 
         return f"""
-        <b>{self.small_text}</b> {f"\n<i>{self.faction}</i>\n" if self.is_faction else ""}
+        <b>{self.title}</b> {f"\n<i>{self.faction}</i>\n" if self.is_faction else ""}
 {self.description}
 
 <b>Требования:</b> {prereq_part}
 """
+
+    @property
+    def faction_info(self) -> str:
+        return f"<b>{str(self.color_icon)*self.prerequisites[self.color]} {self.name}:</b> {self.description}"
