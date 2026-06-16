@@ -127,3 +127,9 @@ class Unit:
 """
 
         return InputRichMessage(markdown=buffer)
+
+    @property
+    def rich_with_upgrade(self) -> InputRichMessage:
+        if self.upgrade is None:
+            return self.rich_info
+        return InputRichMessage(markdown=f"{self.rich_info.markdown}\n\n{self.upgrade.rich_info.markdown}")

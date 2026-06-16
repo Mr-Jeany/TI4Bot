@@ -17,10 +17,26 @@ class Emoji:
         return f"![{self.symbol}](tg://emoji?id={self.id})"
 
 class TechnologySpeciality:
-    green = "<tg-emoji emoji-id='5224642078507572156'>🌟</tg-emoji>"
-    yellow = "<tg-emoji emoji-id='5224586883882848672'>🌟</tg-emoji>"
-    blue = "<tg-emoji emoji-id='5226561134319933905'>🌟</tg-emoji>"
-    red = "<tg-emoji emoji-id='5224243557082112236'>🌟</tg-emoji>"
+    green = Emoji(
+        "5224642078507572156",
+        "🌟"
+    )
+
+    yellow = Emoji(
+        "5224586883882848672",
+        "🌟"
+    )
+
+    blue = Emoji(
+        "5226561134319933905",
+        "🌟"
+    )
+
+    red = Emoji(
+        "5224243557082112236",
+        "🌟"
+    )
+
 
 class UnitsEmoji:
     flagship = Emoji(
@@ -59,6 +75,12 @@ class LeadersEmoji:
     hero = Emoji(
         "5228749536121365977",
         "3️⃣"
+    )
+
+class OtherEmoji:
+    commodity = Emoji(
+        "5299015858213921283",
+        "💸"
     )
 
 class AdditionalInfoCallback(CallbackData, prefix="addinfo"):

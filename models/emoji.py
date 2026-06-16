@@ -6,6 +6,10 @@ class CustomEmoji:
     def __str__(self):
         return f"<tg-emoji emoji-id='{self.custom_emoji_id}'>{self.base_emoji}</tg-emoji>"
 
+    @property
+    def rich(self):
+        return f"![{self.base_emoji}](tg://emoji?id={self.custom_emoji_id})"
+
 class UnitsEmoji:
     carrier = CustomEmoji(
         "5249050334701068122",

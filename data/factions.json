@@ -3,6 +3,10 @@
         {
             "id": "creuss",
             "name": "Призраки Креусса",
+
+            "commodities": 4,
+            "complexity": 2,
+
             "aliases": [],
             "emoji": {
                 "id": "5469965490854055998",
@@ -132,6 +136,10 @@
         {
             "id": "muaat",
             "name": "Тлеющие с Муаата",
+
+            "commodities": 4,
+            "complexity": 3,
+
             "aliases": [],
             "emoji": {
                 "id": "5231250800520498019",

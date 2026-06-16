@@ -14,6 +14,9 @@ async def load_faction(faction_id, faction_dict) -> Faction:
     faction_dict.pop("id")
     name = faction_dict.pop("name")
 
+    commodities = faction_dict.pop("commodities")
+    complexity = faction_dict.pop("complexity")
+
     # Creating emoji
     custom_emoji = faction_dict.pop("emoji")
     emoji = CustomEmoji(custom_emoji.pop("id"), custom_emoji.pop("base_emoji"))
@@ -32,7 +35,14 @@ async def load_faction(faction_id, faction_dict) -> Faction:
             (unit["id"], unit["count"])
         )
 
-    # TODO: Starting tech that will also work with "choose..."
+    # Starting tech
+    # TODO: Make it work with "choose a tech..."
+    # TODO: Make it with objects
+    starting_technologies = faction_dict.pop("starting_technologies")
+    tech_list = []
+
+    for tech in starting_technologies:
+        tech_list.append((tech["name"], tech["color"]))
 
     # Creating abilities
     abilities = []
@@ -139,6 +149,10 @@ async def load_faction(faction_id, faction_dict) -> Faction:
     baking_faction = Faction(
         id=faction_id,
         name=name,
+
+        commodities=commodities,
+        complexity=complexity,
+
         emoji=emoji,
         planets=planet_list,
         starting_units=unit_list,
@@ -152,7 +166,8 @@ async def load_faction(faction_id, faction_dict) -> Faction:
 
         flagship=flagship,
         mech=mech,
-        **faction_dict
+
+        starting_technologies=tech_list,
     )
 
     return baking_faction
