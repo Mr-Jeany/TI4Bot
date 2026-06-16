@@ -74,8 +74,8 @@ async def load_faction(faction_id, faction_dict) -> Faction:
             upgrade = unit.pop("upgrade", None)
 
             if upgrade:
-                upgrade_unit = Unit(id=upgrade["id"],
-                                     unit_type=UnitType(upgrade["type"]),
+                upgrade_unit = Unit(id=upgrade.pop("id"),
+                                     unit_type=UnitType(upgrade.pop("type")),
                                      **upgrade)
             else:
                 upgrade_unit = None
@@ -109,6 +109,7 @@ async def load_faction(faction_id, faction_dict) -> Faction:
         faction_specific_units=faction_specific_units,
 
         flagship=flagship,
+        mech=mech,
         **faction_dict
     )
 

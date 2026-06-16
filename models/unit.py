@@ -1,5 +1,8 @@
 from enum import Enum
 
+from aiogram.types import InputRichMessage
+from tabulate import tabulate
+
 from utils import UnitsEmoji
 
 
@@ -41,8 +44,8 @@ class Unit:
 
     upgrade: Unit | None
 
-    def __init__(self, id: str, unit_type: UnitType, name: str, description: str | None, abilities: list, cost: int,
-                 combat: int, number_of_attacks: int,
+    def __init__(self, id: str, unit_type: UnitType, name: str, description: str | None, abilities: list, cost: int | None = None,
+                 combat: int | None = None, number_of_attacks: int | None = None,
                  move: int | None = None, capacity: int | None = None, prerequisites: dict | None = None,
                  is_faction_specific: bool = False, faction: str | None = None,
                  upgrade: Unit | None = None):
@@ -74,3 +77,46 @@ class Unit:
         emoji = getattr(UnitsEmoji, self.unit_type.name.lower(), None)
 
         return f"{emoji if emoji else ""} {self.name}"
+
+    @property
+    def abilities_text(self) -> str:
+        buffer = ""
+        for ability in self.abilities:
+            buffer += f"- {ability}\n"
+
+        buffer = buffer.rstrip()
+
+        return buffer
+
+    @property
+    def rich_info(self) -> InputRichMessage:
+        headers = []
+        data = []
+
+        if self.cost:
+            headers.append("Цена")
+            data.append(self.cost)
+
+        if self.combat:
+            headers.append("Бой")
+            data.append(f"{self.combat}x{self.number_of_attacks}")
+
+        if self.move:
+            headers.append("Полёт")
+            data.append(self.move)
+
+        if self.capacity:
+            headers.append("Место")
+            data.append(self.capacity)
+
+        table = tabulate([data], headers=headers, tablefmt="pipe", colalign="leftua")
+
+        buffer = f"""
+# {self.short}
+{self.description}
+{self.abilities_text}
+
+{table}
+"""
+
+        return InputRichMessage(markdown=buffer)

@@ -60,6 +60,8 @@ async def search_unit_handler(message: Message) -> None:
 
 @dp.message(Command("faction"))
 async def search_faction_handler(message: Message) -> None:
+    # TODO: After adding a loder, use it and factions inside it for
+
     message_text = message.text
     arguments = message_text.split(" ", 1)[1].split(" ")
     faction_name = arguments[0]
@@ -216,6 +218,7 @@ async def load_faction_handler(message: Message) -> None:
     faction_object = await load_faction(faction_name, faction_dict)
 
     await message.answer(faction_object.full_text)
+    await message.answer_rich(faction_object.flagship.rich_info)
 
 
 @dp.message(Command("test"))
@@ -298,6 +301,8 @@ async def catch_emoji_handler(message: Message) -> None:
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    # TODO: Add loader for all faction and in the future for all techs etc etc
 
     # And the run events dispatching
     await dp.start_polling(bot)
