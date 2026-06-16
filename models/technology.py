@@ -9,10 +9,11 @@ class Technology:
         self.color_icon = getattr(TechnologySpeciality, color)
 
         self.faction = None
-        self.is_faction = faction_specific
+        self.is_faction = False
 
         if faction_specific:
             self.faction = faction_specific
+            self.is_faction = True
 
         self.name = name
         self.description = description
