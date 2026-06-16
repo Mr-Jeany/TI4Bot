@@ -12,6 +12,10 @@ class Emoji:
     def __str__(self):
         return f"<tg-emoji emoji-id='{self.id}'>{self.symbol}</tg-emoji>"
 
+    @property
+    def rich(self):
+        return f"![{self.symbol}](tg://emoji?id={self.id})"
+
 class TechnologySpeciality:
     green = "<tg-emoji emoji-id='5224642078507572156'>🌟</tg-emoji>"
     yellow = "<tg-emoji emoji-id='5224586883882848672'>🌟</tg-emoji>"
@@ -62,6 +66,7 @@ class AdditionalInfoCallback(CallbackData, prefix="addinfo"):
     faction: str
 
 
+# TODO: Remove CustomEmoji or Emoji (look above)
 class CustomEmoji:
     def __init__(self, custom_emoji_id, base_emoji):
         self.custom_emoji_id = custom_emoji_id
@@ -69,6 +74,10 @@ class CustomEmoji:
 
     def __str__(self):
         return f"<tg-emoji emoji-id='{self.custom_emoji_id}'>{self.base_emoji}</tg-emoji>"
+
+    @property
+    def rich(self):
+        return f"![{self.base_emoji}](tg://emoji?id={self.custom_emoji_id})"
 
 async def get_faction(faction_id) -> Dict[Any, Any] | None:
     factions = json.load(open("data/factions.json", encoding="utf-8"))

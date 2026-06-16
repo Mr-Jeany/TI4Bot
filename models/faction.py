@@ -2,6 +2,7 @@ import json
 
 from models.ability import Ability
 from models.emoji import CustomEmoji, UnitsEmoji
+from models.leader import Leader
 from models.planet import Planet
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
@@ -23,9 +24,9 @@ class Faction:
     mech: Unit
     promissory_note: PromissoryNote
 
-    agent: dict
-    commander: dict
-    hero: dict
+    agent: Leader
+    commander: Leader
+    hero: Leader
 
     def __init__(self,
                  id: str,
@@ -40,6 +41,10 @@ class Faction:
 
                  flagship: Unit,
                  mech: Unit,
+
+                 agent: Leader,
+                 commander: Leader,
+                 hero: Leader,
 
                  promissory_note: PromissoryNote,
 
@@ -70,12 +75,17 @@ class Faction:
         self.promissory_note = promissory_note
         self.promissory_note.faction = self
 
+        self.agent = agent
+        self.agent.faction = self
+
+        self.commander = commander
+        self.commander.faction = self
+
+        self.hero = hero
+        self.hero.faction = self
+
         # Raw
         self.starting_technologies = kwargs.pop("starting_technologies")
-
-        self.agent = kwargs.pop("agent")
-        self.commander = kwargs.pop("commander")
-        self.hero = kwargs.pop("hero")
 
     @property
     def header(self) -> str:

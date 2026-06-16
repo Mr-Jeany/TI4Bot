@@ -1,5 +1,6 @@
 from models.ability import Ability
 from models.faction import Faction
+from models.leader import Leader, LeaderTypes
 from models.planet import Planet
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
@@ -108,6 +109,33 @@ async def load_faction(faction_id, faction_dict) -> Faction:
         description=pn["description"],
     )
 
+    # Agent
+    agent_d = faction_dict.pop("agent")
+    agent = Leader(id=f"{faction_id}_agent",
+                   type=LeaderTypes.AGENT,
+                   name=agent_d["name"],
+                   description=agent_d["description"]
+                   )
+
+    # Commander
+    commander_d = faction_dict.pop("commander")
+    commander = Leader(id=f"{faction_id}_commander",
+                   type=LeaderTypes.COMMANDER,
+                   name=commander_d["name"],
+                   description=commander_d["description"],
+                   unlocking=commander_d["condition"]
+                   )
+
+    # Hero
+    hero_d = faction_dict.pop("hero")
+    hero = Leader(id=f"{faction_id}_hero",
+                   type=LeaderTypes.HERO,
+                   name=hero_d["name"],
+                   description=hero_d["description"],
+                   unlocking="Имейте 3 выполненные цели."
+                   )
+
+
     baking_faction = Faction(
         id=faction_id,
         name=name,
@@ -118,6 +146,9 @@ async def load_faction(faction_id, faction_dict) -> Faction:
         faction_technologies=technologies,
         faction_specific_units=faction_specific_units,
         promissory_note=prom_note,
+        agent=agent,
+        commander=commander,
+        hero=hero,
 
         flagship=flagship,
         mech=mech,

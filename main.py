@@ -219,6 +219,8 @@ async def load_faction_handler(message: Message) -> None:
 
     buttons = []
 
+    # TODO: Change buttons below to a data-driven system
+
     # Flagship and mech
     button_row = []
     button_row.append(
@@ -249,9 +251,19 @@ async def load_faction_handler(message: Message) -> None:
     button_row = []
     button_row.append(
         InlineKeyboardButton(text=faction_object.promissory_note.name,
-                             callback_data=AdditionalInfoCallback(type="prom_note", faction=faction_name).pack(),
+                             callback_data=AdditionalInfoCallback(type="promissory_note", faction=faction_name).pack(),
                              icon_custom_emoji_id=CardsEmoji.prom_note.id)
     )
+    buttons.append(button_row)
+
+    # Leaders
+    button_row = []
+    for leader in [faction_object.agent, faction_object.commander, faction_object.hero]:
+        button_row.append(
+            InlineKeyboardButton(text=leader.name,
+                                 callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
+                                 icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+        )
     buttons.append(button_row)
 
 
@@ -304,21 +316,21 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
         await callback_query.message.delete()
         await callback_query.message.answer_rich(faction_object.mech.rich_info)
 
-    elif callback_type == "prom_note":
+    elif callback_type == "promissory_note":
         await callback_query.message.delete()
         await callback_query.message.answer_rich(faction_object.promissory_note.rich_info)
 
     elif callback_type == "agent":
-        agent = await Leaders.build_agent(faction)
-        await callback_query.message.edit_text(agent)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.agent.full)
 
     elif callback_type == "commander":
-        commander = await Leaders.build_commander(faction)
-        await callback_query.message.edit_text(commander)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.commander.full)
 
     elif callback_type == "hero":
-        hero = await Leaders.build_hero(faction)
-        await callback_query.message.edit_text(hero)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.hero.full)
 
     else:
         unit = await build_fsu(faction, callback_type)
