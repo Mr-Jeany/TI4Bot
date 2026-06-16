@@ -217,8 +217,48 @@ async def load_faction_handler(message: Message) -> None:
 
     faction_object = await load_faction(faction_name, faction_dict)
 
-    await message.answer(faction_object.full_text)
-    await message.answer_rich(faction_object.flagship.rich_info)
+    buttons = []
+
+    # Flagship and mech
+    button_row = []
+    button_row.append(
+        InlineKeyboardButton(text=faction_object.flagship.name,
+                             callback_data=AdditionalInfoCallback(type="flagship", faction=faction_name).pack(),
+                             icon_custom_emoji_id=UnitsEmoji.flagship.id)
+    )
+
+    button_row.append(
+        InlineKeyboardButton(text=faction_object.mech.name,
+                             callback_data=AdditionalInfoCallback(type="mech", faction=faction_name).pack(),
+                             icon_custom_emoji_id=UnitsEmoji.mech.id)
+    )
+    buttons.append(button_row)
+
+    # FSU
+    if faction_object.faction_specific_units:
+        button_row = []
+        for unit in faction_object.faction_specific_units:
+            button_row.append(
+                InlineKeyboardButton(text=unit.name,
+                                     callback_data=AdditionalInfoCallback(type=unit.unit_type, faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(UnitsEmoji, unit.unit_type).id)
+            )
+    buttons.append(button_row)
+
+    # PN
+    button_row = []
+    button_row.append(
+        InlineKeyboardButton(text=faction_object.promissory_note.name,
+                             callback_data=AdditionalInfoCallback(type="prom_note", faction=faction_name).pack(),
+                             icon_custom_emoji_id=CardsEmoji.prom_note.id)
+    )
+    buttons.append(button_row)
+
+
+    keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
+
+    await message.answer(faction_object.full_text, reply_markup=keyboard_inline)
+    # await message.answer_rich(faction_object.mech.rich_info, )
 
 
 @dp.message(Command("test"))
@@ -252,17 +292,21 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
     callback_type = callback_data.type
     faction = callback_data.faction
 
+    faction_dict = await get_faction(faction)
+
+    faction_object = await load_faction(faction, faction_dict)
+
     if callback_type == "flagship":
-        flagship = await build_flagship(faction)
-        await callback_query.message.edit_text(flagship)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.flagship.rich_info)
 
     elif callback_type == "mech":
-        mech = await build_mech(faction)
-        await callback_query.message.edit_text(mech)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.mech.rich_info)
 
     elif callback_type == "prom_note":
-        pn = await build_pn(faction)
-        await callback_query.message.edit_text(pn)
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(faction_object.promissory_note.rich_info)
 
     elif callback_type == "agent":
         agent = await Leaders.build_agent(faction)
@@ -276,14 +320,11 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
         hero = await Leaders.build_hero(faction)
         await callback_query.message.edit_text(hero)
 
-    elif callback_type in ["warsun"]:
+    else:
         unit = await build_fsu(faction, callback_type)
         await callback_query.message.edit_text(
             unit
         )
-
-    else:
-        await callback_query.message.edit_text(f"ошибочка где-то")
 
 
 @dp.message(Command("catch_emoji"))

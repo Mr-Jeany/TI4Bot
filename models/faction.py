@@ -3,6 +3,7 @@ import json
 from models.ability import Ability
 from models.emoji import CustomEmoji, UnitsEmoji
 from models.planet import Planet
+from models.promissory_note import PromissoryNote
 from models.technology import Technology
 from models.unit import Unit
 
@@ -17,9 +18,10 @@ class Faction:
     abilities: list[Ability] | None
     faction_specific_units: list | None
     faction_technologies: list[Technology]
+
     flagship: Unit
     mech: Unit
-    promissory_note: dict
+    promissory_note: PromissoryNote
 
     agent: dict
     commander: dict
@@ -39,11 +41,14 @@ class Faction:
                  flagship: Unit,
                  mech: Unit,
 
+                 promissory_note: PromissoryNote,
+
                  **kwargs):
         # Correct way to create
         self.id = id
         self.name = name
         self.emoji = emoji
+        self.type = type
 
         self.planets = planets
         self.starting_units = starting_units
@@ -52,14 +57,21 @@ class Faction:
         self.faction_technologies = faction_technologies
 
         self.faction_specific_units = faction_specific_units
+        if faction_specific_units:
+            for unit in faction_specific_units:
+                unit.faction = self
 
         self.flagship = flagship
+        self.flagship.faction = self
+
         self.mech = mech
+        self.mech.faction = self
+
+        self.promissory_note = promissory_note
+        self.promissory_note.faction = self
 
         # Raw
         self.starting_technologies = kwargs.pop("starting_technologies")
-
-        self.promissory_note = kwargs.pop("promissory_note")
 
         self.agent = kwargs.pop("agent")
         self.commander = kwargs.pop("commander")

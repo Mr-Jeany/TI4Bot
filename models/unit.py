@@ -5,6 +5,10 @@ from tabulate import tabulate
 
 from utils import UnitsEmoji
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models.faction import Faction
 
 class UnitType(str, Enum):
     CARRIER = "carrier"
@@ -40,14 +44,14 @@ class Unit:
     prerequisites: dict | None
 
     is_faction_specific: bool = False
-    faction: str | None
+    faction: "Faction | None" = None
 
     upgrade: Unit | None
 
     def __init__(self, id: str, unit_type: UnitType, name: str, description: str | None, abilities: list, cost: int | None = None,
                  combat: int | None = None, number_of_attacks: int | None = None,
                  move: int | None = None, capacity: int | None = None, prerequisites: dict | None = None,
-                 is_faction_specific: bool = False, faction: str | None = None,
+                 is_faction_specific: bool = False, faction: "Faction | None" = None,
                  upgrade: Unit | None = None):
         self.id = id
         self.unit_type = unit_type
@@ -99,7 +103,10 @@ class Unit:
 
         if self.combat:
             headers.append("Бой")
-            data.append(f"{self.combat}x{self.number_of_attacks}")
+            if self.number_of_attacks > 1:
+                data.append(f"{self.combat}x{self.number_of_attacks}")
+            else:
+                data.append(self.combat)
 
         if self.move:
             headers.append("Полёт")
@@ -109,10 +116,10 @@ class Unit:
             headers.append("Место")
             data.append(self.capacity)
 
-        table = tabulate([data], headers=headers, tablefmt="pipe", colalign="leftua")
+        table = tabulate([data], headers=headers, tablefmt="pipe", colglobalalign="left")
 
         buffer = f"""
-# {self.short}
+# {f'{self.faction.emoji}' if self.faction else ""}{self.short}
 {self.description}
 {self.abilities_text}
 

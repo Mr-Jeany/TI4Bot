@@ -1,6 +1,7 @@
 from models.ability import Ability
 from models.faction import Faction
 from models.planet import Planet
+from models.promissory_note import PromissoryNote
 from models.technology import Technology
 from models.unit import Unit, UnitType
 from utilities.static_objects import StaticUnits
@@ -98,6 +99,15 @@ async def load_faction(faction_id, faction_dict) -> Faction:
                 unit_type=UnitType.MECH,
                 **faction_dict.pop("mech"))
 
+    # PN
+    pn = faction_dict.pop("promissory_note")
+
+    prom_note = PromissoryNote(
+        id=f"{faction_id}_pn",
+        name=pn["name"],
+        description=pn["description"],
+    )
+
     baking_faction = Faction(
         id=faction_id,
         name=name,
@@ -107,6 +117,7 @@ async def load_faction(faction_id, faction_dict) -> Faction:
         abilities=abilities,
         faction_technologies=technologies,
         faction_specific_units=faction_specific_units,
+        promissory_note=prom_note,
 
         flagship=flagship,
         mech=mech,
