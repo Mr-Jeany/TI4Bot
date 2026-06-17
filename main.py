@@ -11,13 +11,9 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputRichMessage
 
-from builders import build_flagship, build_mech, build_pn, MessageParts, build_fsu
-from models.planet import Planet
-from models.unit import Unit, UnitType
 from technologies import get_technology
 from utilities.loader import load_faction, load_all_factions
-from utils import AdditionalInfoCallback, Leaders, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
-from tabulate import tabulate
+from utils import AdditionalInfoCallback, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
 
 FACTIONS: dict | None = None
 
@@ -123,9 +119,7 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
     callback_type = callback_data.type
     faction = callback_data.faction
 
-    faction_dict = await get_faction(faction)
-
-    faction_object = await load_faction(faction, faction_dict)
+    faction_object = FACTIONS[faction]
 
     if callback_type == "flagship":
         await callback_query.message.delete()
