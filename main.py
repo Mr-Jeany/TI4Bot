@@ -13,7 +13,8 @@ from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, C
 
 from technologies import get_technology
 from utilities.loader import load_faction, load_all_factions
-from utils import AdditionalInfoCallback, get_faction, UnitsEmoji, CardsEmoji, LeadersEmoji
+from utils import AdditionalInfoCallback, get_faction, CardsEmoji, LeadersEmoji
+from models.emoji import UnitsEmoji
 
 FACTIONS: dict | None = None
 

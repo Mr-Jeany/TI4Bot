@@ -120,7 +120,7 @@ class Unit:
 
         buffer = f"""
 # {f'{self.faction.emoji}' if self.faction else ""}{self.short}
-{self.description}
+{self.description if self.description else ""}
 {self.abilities_text}
 
 {table}

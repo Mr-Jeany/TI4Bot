@@ -2,6 +2,7 @@ class CustomEmoji:
     def __init__(self, custom_emoji_id, base_emoji):
         self.custom_emoji_id = custom_emoji_id
         self.base_emoji = base_emoji
+        self.id = custom_emoji_id
 
     def __str__(self):
         return f"<tg-emoji emoji-id='{self.custom_emoji_id}'>{self.base_emoji}</tg-emoji>"

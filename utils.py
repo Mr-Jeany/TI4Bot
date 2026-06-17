@@ -54,6 +54,16 @@ class UnitsEmoji:
         "🌞"
     )
 
+    carrier = Emoji(
+        "5249050334701068122",
+        "🚀"
+    )
+
+    infantry = Emoji(
+        "5249443650626164757",
+        "🤖"
+    )
+
 
 class CardsEmoji:
     prom_note = Emoji(
