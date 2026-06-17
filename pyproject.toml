@@ -4,5 +4,6 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.14"
 dependencies = [
-    "aiogram==3.29.0"
+    "aiogram==3.29.0",
+    "tabulate>=0.10.0",
 ]

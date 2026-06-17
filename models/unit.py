@@ -83,7 +83,10 @@ class Unit:
         return f"{emoji if emoji else ""} {self.name}"
 
     @property
-    def abilities_text(self) -> str:
+    def abilities_text(self) -> str | None:
+        if self.abilities is None:
+            return None
+
         buffer = ""
         for ability in self.abilities:
             buffer += f"- {ability}\n"
@@ -119,9 +122,9 @@ class Unit:
         table = tabulate([data], headers=headers, tablefmt="pipe", colglobalalign="left")
 
         buffer = f"""
-# {f'{self.faction.emoji}' if self.faction else ""}{self.short}
+# {f'{self.faction.emoji} ' if self.faction else ""}{self.short}
 {self.description if self.description else ""}
-{self.abilities_text}
+{self.abilities_text if self.abilities_text else ""}
 
 {table}
 """

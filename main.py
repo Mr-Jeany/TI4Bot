@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 import json
 import logging
 import os
@@ -9,7 +10,8 @@ from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputRichMessage
+from tabulate import tabulate
 
 from technologies import get_technology
 from utilities.loader import load_all_factions
@@ -103,14 +105,40 @@ async def load_faction_handler(message: Message) -> None:
 
 
 # Command for getting ban order
-@dp.message(Command("shuffle"))
+@dp.message(Command("ban_order", "bo"))
 async def shuffle_things_handler(message: Message) -> None:
     message_text = message.text
-    arguments = message_text.split(" ", 1)[1].split(";")
+    arguments = message_text.split(" ", 1)[1].split(" ")
 
     random.shuffle(arguments)
+    headers = [str(x) for x in range(1, len(arguments) + 1)]
 
-    await message.answer(f"Случайный порядок:\n- {'\n- '.join(arguments)}")
+    table = tabulate(
+        [arguments],
+        headers=headers,
+        tablefmt="pipe",
+        colalign=["left"]*len(headers),
+    )
+
+    message_reply = f"""
+# 🚫 Порядок банов
+*Использовано {message.from_user.mention_markdown()}*
+
+{table}
+"""
+
+    buttons_raw = []
+    for faction_name, faction_object in FACTIONS.items():
+        buttons_raw.append(InlineKeyboardButton(
+            text=faction_object.name,
+            callback_data=AdditionalInfoCallback(type="ban", faction=faction_name).pack(),
+            icon_custom_emoji_id=faction_object.emoji.id
+        ))
+
+    buttons_cooked = list(itertools.batched(buttons_raw, 2))
+
+    # await message.delete()
+    await message.answer_rich(InputRichMessage(markdown=message_reply), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
 
 
 @dp.callback_query(AdditionalInfoCallback.filter())

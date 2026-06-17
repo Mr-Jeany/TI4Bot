@@ -160,7 +160,7 @@ class Faction:
 
         for tech in self.faction_technologies:
             buffer += f"""
-#### {tech.color_icon.rich*tech.prerequisites[tech.color]} {tech.name}\n{tech.description}\n
+#### {(str(tech.color_icon.rich) + " ")*tech.prerequisites[tech.color]} {tech.name}\n{tech.description}\n
 """
 
         buffer  = buffer.rstrip()
