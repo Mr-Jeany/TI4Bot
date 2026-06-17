@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from aiogram.types import InputRichMessage
 
-from utils import CardsEmoji
+from models.emoji import CardsEmoji
 
 if TYPE_CHECKING:
     from models.faction import Faction

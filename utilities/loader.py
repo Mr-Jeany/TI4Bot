@@ -7,18 +7,25 @@ from models.planet import Planet
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
 from models.unit import Unit, UnitType
-from utils import CustomEmoji
+from models.emoji import CustomEmoji
+
+from datetime import datetime
 
 async def load_all_factions(faction_json_converted: dict) -> dict[str, Faction]:
+    print(f"[{datetime.now()}] Loading factions...")
     async def load_one(item: dict):
         faction_id = item["id"]
+        print(f"[{datetime.now()}] Loading {faction_id}...")
         faction = await asyncio.to_thread(load_faction, faction_id, item)
+        print(f"[{datetime.now()}] Finished loading {faction_id}.")
         return faction_id, faction
+
 
     results = await asyncio.gather(
         *(load_one(item) for item in faction_json_converted["items"])
     )
 
+    print(f"[{datetime.now()}] Finished loading all factions.")
     return dict(results)
 
 def load_faction(faction_id, faction_dict) -> Faction:

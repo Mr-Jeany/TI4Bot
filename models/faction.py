@@ -3,13 +3,12 @@ import json
 from aiogram.types import InputRichMessage
 
 from models.ability import Ability
-from models.emoji import CustomEmoji, UnitsEmoji
+from models.emoji import CustomEmoji, UnitsEmoji, TechnologySpecialityEmoji, OtherEmoji
 from models.leader import Leader
 from models.planet import Planet
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
 from models.unit import Unit
-from utils import TechnologySpeciality, OtherEmoji
 
 
 class Faction:
@@ -123,7 +122,7 @@ class Faction:
         st = "## Начальные технологии\n"
 
         for tech_name, tech_color in self.starting_technologies:
-            st += f"- {(str(getattr(TechnologySpeciality, tech_color).rich) + " ")} {tech_name}\n"
+            st += f"- {(str(getattr(TechnologySpecialityEmoji, tech_color).rich) + " ")} {tech_name}\n"
 
         buffer = f"""
 {planets}

@@ -3,7 +3,7 @@ from enum import Enum
 from aiogram.types import InputRichMessage
 from tabulate import tabulate
 
-from utils import UnitsEmoji
+from models.emoji import UnitsEmoji
 
 from typing import TYPE_CHECKING
 

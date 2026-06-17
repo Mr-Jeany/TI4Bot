@@ -1,12 +1,11 @@
-from utils import TechnologySpeciality
-
+from models.emoji import TechnologySpecialityEmoji
 
 class Technology:
     def __init__(self, id: str, id_short: str, color: str, name: str, description: str, faction_specific: str | None, prerequisites: dict | None):
         self.id = id
         self.id_short = id_short
         self.color = color
-        self.color_icon = getattr(TechnologySpeciality, color)
+        self.color_icon = getattr(TechnologySpecialityEmoji, color)
 
         self.faction = None
         self.is_faction = False
@@ -28,7 +27,7 @@ class Technology:
         prereq_part = ""
         if self.prerequisites:
             for prereq_color, prereq_number in self.prerequisites.items():
-                prereq_part += f"{getattr(TechnologySpeciality, prereq_color)*prereq_number}"
+                prereq_part += f"{getattr(TechnologySpecialityEmoji, prereq_color)*prereq_number}"
 
             prereq_part.rstrip()
         else:

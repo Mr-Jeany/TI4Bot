@@ -67,5 +67,51 @@ class UnitsEmoji:
         "🏠"
     )
 
+class TechnologySpecialityEmoji:
+    green = CustomEmoji(
+        "5224642078507572156",
+        "🌟"
+    )
 
+    yellow = CustomEmoji(
+        "5224586883882848672",
+        "🌟"
+    )
 
+    blue = CustomEmoji(
+        "5226561134319933905",
+        "🌟"
+    )
+
+    red = CustomEmoji(
+        "5224243557082112236",
+        "🌟"
+    )
+
+class CardsEmoji:
+    prom_note = CustomEmoji(
+        "5229063115978612584",
+        "🎫"
+    )
+
+class LeadersEmoji:
+    agent = CustomEmoji(
+        "5228730127164155764",
+        "1️⃣"
+    )
+
+    commander = CustomEmoji(
+        "5228927841688660110",
+        "2️⃣"
+    )
+
+    hero = CustomEmoji(
+        "5228749536121365977",
+        "3️⃣"
+    )
+
+class OtherEmoji:
+    commodity = CustomEmoji(
+        "5299015858213921283",
+        "💸"
+    )

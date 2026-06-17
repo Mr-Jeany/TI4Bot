@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from aiogram.types import InputRichMessage
 
-from utils import LeadersEmoji
+from models.emoji import LeadersEmoji
 
 if TYPE_CHECKING:
     from models.faction import Faction

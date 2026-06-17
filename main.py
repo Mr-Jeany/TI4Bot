@@ -9,12 +9,12 @@ from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputRichMessage
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
 from technologies import get_technology
-from utilities.loader import load_faction, load_all_factions
-from utils import AdditionalInfoCallback, get_faction, CardsEmoji, LeadersEmoji
-from models.emoji import UnitsEmoji
+from utilities.loader import load_all_factions
+from utils import AdditionalInfoCallback
+from models.emoji import UnitsEmoji, CardsEmoji, LeadersEmoji
 
 FACTIONS: dict | None = None
 
