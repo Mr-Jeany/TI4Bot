@@ -77,7 +77,7 @@ async def load_faction_handler(message: Message) -> None:
                                      callback_data=AdditionalInfoCallback(type=unit.unit_type, faction=faction_name).pack(),
                                      icon_custom_emoji_id=getattr(UnitsEmoji, unit.unit_type).id)
             )
-    buttons.append(button_row)
+        buttons.append(button_row)
 
     # PN
     button_row = []
@@ -121,8 +121,8 @@ async def shuffle_things_handler(message: Message) -> None:
     )
 
     message_reply = f"""
-# 🚫 Порядок банов
-*Использовано {message.from_user.mention_markdown()}*
+# 🚫 Баны
+*Запущено {message.from_user.mention_markdown()}*
 
 {table}
 """
@@ -135,7 +135,7 @@ async def shuffle_things_handler(message: Message) -> None:
             icon_custom_emoji_id=faction_object.emoji.id
         ))
 
-    buttons_cooked = list(itertools.batched(buttons_raw, 2))
+    buttons_cooked = list(itertools.batched(buttons_raw, 5))
 
     # await message.delete()
     await message.answer_rich(InputRichMessage(markdown=message_reply), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))

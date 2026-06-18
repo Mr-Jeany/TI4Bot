@@ -88,6 +88,11 @@ class TechnologySpecialityEmoji:
         "🌟"
     )
 
+    choose = CustomEmoji(
+        "5303222087190618432",
+        "🌚"
+    )
+
 class CardsEmoji:
     prom_note = CustomEmoji(
         "5229063115978612584",

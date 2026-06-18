@@ -13,11 +13,18 @@ from datetime import datetime
 
 async def load_all_factions(faction_json_converted: dict) -> dict[str, Faction]:
     print(f"[{datetime.now()}] Loading factions...")
+
+    # Limit for threads used
+    # TODO: Add config.py
+    semaphore = asyncio.Semaphore(5)
+
     async def load_one(item: dict):
         faction_id = item["id"]
-        print(f"[{datetime.now()}] Loading {faction_id}...")
-        faction = await asyncio.to_thread(load_faction, faction_id, item)
-        print(f"[{datetime.now()}] Finished loading {faction_id}.")
+
+        async with semaphore:
+            print(f"[{datetime.now()}] Loading {faction_id}...")
+            faction = await asyncio.to_thread(load_faction, faction_id, item)
+            print(f"[{datetime.now()}] Finished loading {faction_id}.")
         return faction_id, faction
 
 
@@ -87,7 +94,7 @@ def load_faction(faction_id, faction_dict) -> Faction:
                 name=technology["name"],
                 description=technology["description"],
                 faction_specific="muaat",
-                prerequisites=technology["prerequisites"]
+                prerequisites=technology.pop("prerequisites", None)
             )
 
             technologies.append(new_tech)

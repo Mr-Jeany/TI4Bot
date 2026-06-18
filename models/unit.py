@@ -14,7 +14,7 @@ class UnitType(str, Enum):
     CARRIER = "carrier"
     CRUISER = "cruiser"
     DESTROYER = "destroyer"
-    DREADNOUGHT = "dreadnaught"
+    DREADNOUGHT = "dreadnought"
     FIGHTER = "fighter"
     FLAGSHIP = "flagship"
     WARSUN = "warsun"
