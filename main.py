@@ -131,9 +131,10 @@ async def load_faction_handler(message: Message) -> None:
         for leader in faction_object.agent:
             button_row.append(
                 InlineKeyboardButton(text=leader.name,
-                                     callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
+                                     callback_data=AdditionalInfoCallback(type=leader.id, faction=faction_name).pack(),
                                      icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
             )
+
         buttons.append(button_row)
         button_row = []
         for leader in [faction_object.commander, faction_object.hero]:
@@ -241,9 +242,54 @@ async def view_factions_callback_handler(callback_query: CallbackQuery, callback
 
     await message.edit_text(rich_message=faction_object.full_text, reply_markup=keyboard_inline)
 
+@dp.callback_query(AdditionalInfoCallback.filter())
+async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
+
+
+    callback_type = callback_data.type
+    faction = callback_data.faction
+
+    faction_object = FACTIONS[faction]
+
+    button = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+                text="Назад",
+                callback_data=ViewFactionsCallback(faction=faction_object.id).pack(),
+                # icon_custom_emoji_id=faction_object.emoji.id
+            )]])
+
+    if callback_type == "flagship" and faction_object.id != "nomad":
+        await callback_query.message.edit_text(rich_message=faction_object.flagship.rich_info, reply_markup=button)
+
+    elif callback_type == "mech":
+        await callback_query.message.edit_text(rich_message=faction_object.mech.rich_info, reply_markup=button)
+
+    elif callback_type == "promissory_note":
+        await callback_query.message.edit_text(rich_message=faction_object.promissory_note.rich_info, reply_markup=button)
+
+    elif callback_type == "agent":
+        if len(faction_object.agent) == 1:
+            await callback_query.message.edit_text(rich_message=faction_object.agent[0].full, reply_markup=button)
+
+    elif callback_type == "commander":
+        await callback_query.message.edit_text(rich_message=faction_object.commander.full, reply_markup=button)
+
+    elif callback_type == "hero":
+        await callback_query.message.edit_text(rich_message=faction_object.hero.full, reply_markup=button)
+
+    elif "pn" in callback_type:
+        await callback_query.message.edit_text(rich_message=PROMISSORY_NOTES[callback_type].rich_info, reply_markup=button)
+
+    elif "nomad_agent" in callback_type:
+        await callback_query.message.edit_text(rich_message=[agent.full for agent in faction_object.agent if agent.id == callback_type][0], reply_markup=button)
+
+    else:
+        item = [x for x in faction_object.faction_specific_units if x.unit_type == callback_type][0]
+
+        await callback_query.message.edit_text(rich_message=item.rich_with_upgrade, reply_markup=button)
+
 # Command for getting ban order
 @dp.message(Command("ban_order", "bo"))
-async def shuffle_things_handler(message: Message) -> None:
+async def ban_order_handler(message: Message) -> None:
     message_text = message.text
     arguments = message_text.split(" ", 1)[1].split(" ")
 
@@ -312,51 +358,6 @@ async def ban_callback_handler(callback_query: CallbackQuery, callback_data: Ban
     except TelegramBadRequest as e:
         if "message is not modified" not in str(e):
             raise
-
-
-@dp.callback_query(AdditionalInfoCallback.filter())
-async def extra_info_callback_handler(callback_query: CallbackQuery, callback_data: AdditionalInfoCallback) -> None:
-    await callback_query.answer()
-
-    callback_type = callback_data.type
-    faction = callback_data.faction
-
-    faction_object = FACTIONS[faction]
-
-    if callback_type == "flagship" and faction_object.id != "nomad":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.flagship.rich_info)
-
-    elif callback_type == "mech":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.mech.rich_info)
-
-    elif callback_type == "promissory_note":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.promissory_note.rich_info)
-
-    elif callback_type == "agent":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.agent.full)
-
-    elif callback_type == "commander":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.commander.full)
-
-    elif callback_type == "hero":
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(faction_object.hero.full)
-
-    elif "pn" in callback_type:
-        await callback_query.message.delete()
-        await callback_query.message.answer_rich(PROMISSORY_NOTES[callback_type].rich_info)
-
-    else:
-        await callback_query.message.delete()
-
-        item = [x for x in faction_object.faction_specific_units if x.unit_type == callback_type][0]
-
-        await callback_query.message.answer_rich(item.rich_with_upgrade)
 
 
 @dp.message(Command("catch_emoji"))
