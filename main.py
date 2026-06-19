@@ -33,7 +33,7 @@ async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """
-    await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
+    await message.answer(f"Пиши /f и пока вроде ничего больше")
 
 @dp.message(Command("tech"))
 async def search_tech_handler(message: Message) -> None:
