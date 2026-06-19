@@ -9,17 +9,20 @@ import sys
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputRichMessage
-from tabulate import tabulate
 
 from technologies import get_technology
+from utilities.bans.generators import ban_message_generator, ban_buttons_generator, banned_final_message
 from utilities.loader import load_all_factions
-from utils import AdditionalInfoCallback
+from utils import AdditionalInfoCallback, BanCallback, ViewFactionsCallback
 from models.emoji import UnitsEmoji, CardsEmoji, LeadersEmoji
+from uuid import uuid4
 
 FACTIONS: dict | None = None
 PROMISSORY_NOTES: dict | None = None
+ban_sessions: dict = {}
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 
@@ -45,10 +48,30 @@ async def search_tech_handler(message: Message) -> None:
 @dp.message(Command("faction", "f"))
 async def load_faction_handler(message: Message) -> None:
     message_text = message.text
-    arguments = message_text.split(" ", 1)[1].split(" ")
-    faction_name = arguments[0]
+    mt_split = message_text.split(" ", 1)
+    if len(mt_split) > 1:
+        arguments = mt_split[1].split(" ")
+        faction_name = arguments[0]
+    else:
+        faction_name = ""
 
-    faction_object = FACTIONS[faction_name]
+    faction_object = FACTIONS.get(faction_name, None)
+
+    if not faction_object:
+        buttons_raw = []
+
+        for faction_id, faction_object in FACTIONS.items():
+            buttons_raw.append(InlineKeyboardButton(
+                text=faction_object.name,
+                callback_data=ViewFactionsCallback(faction=faction_id).pack(),
+                icon_custom_emoji_id=faction_object.emoji.id
+            ))
+
+        buttons_cooked = list(itertools.batched(buttons_raw, 3))
+
+        await message.answer_rich(InputRichMessage(markdown="# Выберите фракцию:"), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+
+        return
 
     buttons = []
 
@@ -126,6 +149,97 @@ async def load_faction_handler(message: Message) -> None:
 
     await message.answer_rich(faction_object.full_text, reply_markup=keyboard_inline)
 
+@dp.callback_query(ViewFactionsCallback.filter())
+async def view_factions_callback_handler(callback_query: CallbackQuery, callback_data: ViewFactionsCallback) -> None:
+    # TODO: Change it and search command to use function to escapre repeating code
+
+    faction_id = callback_data.faction
+
+    message = callback_query.message
+
+
+    faction_object = FACTIONS[faction_id]
+    faction_name = faction_object.name
+
+    buttons = []
+
+    # TODO: Change buttons below to a data-driven system
+
+    # Flagship and mech
+    button_row = []
+    button_row.append(
+        InlineKeyboardButton(text=faction_object.flagship.name,
+                             callback_data=AdditionalInfoCallback(type="flagship", faction=faction_name).pack(),
+                             icon_custom_emoji_id=UnitsEmoji.flagship.id)
+    )
+
+    button_row.append(
+        InlineKeyboardButton(text=faction_object.mech.name,
+                             callback_data=AdditionalInfoCallback(type="mech", faction=faction_name).pack(),
+                             icon_custom_emoji_id=UnitsEmoji.mech.id)
+    )
+    buttons.append(button_row)
+
+    # FSU
+    if faction_object.faction_specific_units:
+        button_row = []
+        for unit in faction_object.faction_specific_units:
+            if unit.unit_type != "flagship":
+                button_row.append(
+                    InlineKeyboardButton(text=unit.name,
+                                         callback_data=AdditionalInfoCallback(type=unit.unit_type,
+                                                                              faction=faction_name).pack(),
+                                         icon_custom_emoji_id=getattr(UnitsEmoji, unit.unit_type).id)
+                )
+        if button_row:
+            buttons.append(button_row)
+
+    # PN
+    button_row = []
+    for prom_note_unit in faction_object.promissory_note:
+        button_row.append(
+            InlineKeyboardButton(text=prom_note_unit.name,
+                                 callback_data=AdditionalInfoCallback(type=prom_note_unit.id,
+                                                                      faction=faction_name).pack(),
+                                 icon_custom_emoji_id=CardsEmoji.prom_note.id)
+        )
+    buttons.append(button_row)
+
+    # Leaders
+    if len(faction_object.agent) == 1:
+        button_row = []
+        for leader in [faction_object.agent[0], faction_object.commander, faction_object.hero]:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type,
+                                                                          faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
+
+    else:
+        button_row = []
+        for leader in faction_object.agent:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type,
+                                                                          faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
+        button_row = []
+        for leader in [faction_object.commander, faction_object.hero]:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type,
+                                                                          faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
+
+    keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
+
+    await message.edit_text(rich_message=faction_object.full_text, reply_markup=keyboard_inline)
 
 # Command for getting ban order
 @dp.message(Command("ban_order", "bo"))
@@ -134,35 +248,70 @@ async def shuffle_things_handler(message: Message) -> None:
     arguments = message_text.split(" ", 1)[1].split(" ")
 
     random.shuffle(arguments)
-    headers = [str(x) for x in range(1, len(arguments) + 1)]
+    order = arguments.copy()
 
-    table = tabulate(
-        [arguments],
-        headers=headers,
-        tablefmt="pipe",
-        colalign=["left"]*len(headers),
-    )
+    uuid = str(uuid4())
+    ban_sessions[uuid] = {
+        "order": order,
+        "banned_factions": [],
+        "immune_factions": ["letnev", "saar", "creuss", "mentak", "naalu", "sardakk", "jolnar", "nomad"],
+        "current_person_index": 0
+    }
 
-    message_reply = f"""
-# 🚫 Баны
-*Запущено {message.from_user.mention_markdown()}*
+    print(ban_sessions)
 
-{table}
-"""
+    buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
 
-    buttons_raw = []
-    for faction_name, faction_object in FACTIONS.items():
-        buttons_raw.append(InlineKeyboardButton(
-            text=faction_object.name,
-            callback_data=AdditionalInfoCallback(type="ban", faction=faction_name).pack(),
-            icon_custom_emoji_id=faction_object.emoji.id,
-            # style="primary"
-        ))
+    generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid])
 
-    buttons_cooked = list(itertools.batched(buttons_raw, 5))
+    await message.answer_rich(generated_message, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
 
-    # await message.delete()
-    await message.answer_rich(InputRichMessage(markdown=message_reply), reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+@dp.callback_query(BanCallback.filter())
+async def ban_callback_handler(callback_query: CallbackQuery, callback_data: BanCallback) -> None:
+    uuid = callback_data.uuid
+    ban = callback_data.ban
+
+    session = ban_sessions[uuid]
+
+    if ban in session["banned_factions"]:
+        generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid], comment="## Это фракция уже в бане!")
+        buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
+
+        try:
+            await callback_query.message.edit_text(rich_message=generated_message,
+                                                     reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+        except TelegramBadRequest as e:
+            if "message is not modified" not in str(e):
+                raise
+
+        return
+
+
+    session["banned_factions"].append(ban)
+
+    if session["current_person_index"] == len(session["order"]) - 1:
+        generated_message = await banned_final_message(FACTIONS, uuid, ban_sessions[uuid])
+
+        try:
+            await callback_query.message.edit_text(rich_message=generated_message)
+        except TelegramBadRequest as e:
+            if "message is not modified" not in str(e):
+                raise
+
+        del ban_sessions[uuid]
+        return
+
+    session["current_person_index"] += 1
+
+    generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid])
+    buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
+
+    try:
+        await callback_query.message.edit_text(rich_message=generated_message,
+                                             reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+    except TelegramBadRequest as e:
+        if "message is not modified" not in str(e):
+            raise
 
 
 @dp.callback_query(AdditionalInfoCallback.filter())
@@ -208,7 +357,6 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
         item = [x for x in faction_object.faction_specific_units if x.unit_type == callback_type][0]
 
         await callback_query.message.answer_rich(item.rich_with_upgrade)
-
 
 
 @dp.message(Command("catch_emoji"))

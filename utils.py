@@ -6,7 +6,8 @@ class AdditionalInfoCallback(CallbackData, prefix="addinfo"):
     faction: str
 
 class BanCallback(CallbackData, prefix="ban"):
-    banned_factions: list
-    immune_factions: list
-    ban_order: list
-    current_person_index: int
+    uuid: str
+    ban: str
+
+class ViewFactionsCallback(CallbackData, prefix="viewfactions"):
+    faction: str
