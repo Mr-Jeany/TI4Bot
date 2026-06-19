@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  BOT_IMAGE: ghcr.io/${{ github.repository }}/telegram-bot
+  BOT_IMAGE: ghcr.io/ti4bot/telegram-bot
   BOT_CONTAINER_NAME: telegram-bot
 
 jobs:
