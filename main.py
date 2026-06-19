@@ -242,7 +242,14 @@ async def view_factions_callback_handler(callback_query: CallbackQuery, callback
             )
         buttons.append(button_row)
 
+    buttons.append(
+        [InlineKeyboardButton(text="Назад",
+                              callback_data=AdditionalInfoCallback(type="back", faction=faction_name).pack())]
+    )
+
     keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
 
     await message.edit_text(rich_message=faction_object.full_text, reply_markup=keyboard_inline)
 
