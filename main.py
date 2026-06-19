@@ -324,11 +324,12 @@ async def ban_order_handler(message: Message) -> None:
     random.shuffle(arguments)
     order = arguments.copy()
 
+    # TODO: Immune system
     uuid = str(uuid4())
     ban_sessions[uuid] = {
         "order": order,
         "banned_factions": [],
-        "immune_factions": ["letnev", "saar", "creuss", "mentak", "naalu", "sardakk", "jolnar", "nomad"],
+        "immune_factions": [],
         "current_person_index": 0
     }
 
