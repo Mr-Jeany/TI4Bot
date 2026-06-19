@@ -159,7 +159,7 @@ async def view_factions_callback_handler(callback_query: CallbackQuery, callback
 
 
     faction_object = FACTIONS[faction_id]
-    faction_name = faction_object.name
+    faction_name = faction_object.id # Who the hell used faction_name instead of faction_id
 
     buttons = []
 
