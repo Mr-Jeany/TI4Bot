@@ -174,7 +174,6 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
 
     faction_object = FACTIONS[faction]
 
-    # TODO: Fix this shit with Nomad
     if callback_type == "flagship" and faction_object.id != "nomad":
         await callback_query.message.delete()
         await callback_query.message.answer_rich(faction_object.flagship.rich_info)
