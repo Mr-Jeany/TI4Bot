@@ -81,7 +81,7 @@ async def banned_final_message(factions: dict[str, Faction],
     buffer = f"""
 # 🚫 Баны
 
-{"**Забанены:**" + banned_line if banned_line else ""}
+{"**Забанены: **" + banned_line if banned_line else ""}
 
 {"**Разрешены:**\n" + allowed_line}
 
