@@ -146,6 +146,10 @@ async def load_faction_handler(message: Message) -> None:
         buttons.append(button_row)
 
 
+    buttons.append(
+        [InlineKeyboardButton(text="Назад",
+                              callback_data=AdditionalInfoCallback(type="back", faction=faction_name).pack())]
+    )
     keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
 
     await message.answer_rich(faction_object.full_text, reply_markup=keyboard_inline)
@@ -281,6 +285,23 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
 
     elif "nomad_agent" in callback_type:
         await callback_query.message.edit_text(rich_message=[agent.full for agent in faction_object.agent if agent.id == callback_type][0], reply_markup=button)
+
+    elif callback_type == "back":
+        buttons_raw = []
+
+        for faction_id, faction_object in FACTIONS.items():
+            buttons_raw.append(InlineKeyboardButton(
+                text=faction_object.name,
+                callback_data=ViewFactionsCallback(faction=faction_id).pack(),
+                icon_custom_emoji_id=faction_object.emoji.id
+            ))
+
+        buttons_cooked = list(itertools.batched(buttons_raw, 3))
+
+        await callback_query.message.edit_text(rich_message=InputRichMessage(markdown="# Выберите фракцию:"),
+                                  reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+
+        return
 
     else:
         item = [x for x in faction_object.faction_specific_units if x.unit_type == callback_type][0]
