@@ -137,21 +137,40 @@ def load_faction(faction_id, faction_dict) -> Faction:
                 **faction_dict.pop("mech"))
 
     # PN
-    pn = faction_dict.pop("promissory_note")
-
-    prom_note = PromissoryNote(
-        id=f"{faction_id}_pn",
-        name=pn["name"],
-        description=pn["description"],
-    )
+    pns = faction_dict.pop("promissory_note")
+    if type(pns) is not list:
+        prom_note = [PromissoryNote(
+            id=f"{faction_id}_pn",
+            name=pns["name"],
+            description=pns["description"],
+        )]
+    else:
+        prom_note = []
+        for pn in pns:
+            cpn = PromissoryNote(
+                id=f"{faction_id}_pn_{pn['id']}",
+                name=pn["name"],
+                description=pn["description"],
+            )
+            prom_note.append(cpn)
 
     # Agent
     agent_d = faction_dict.pop("agent")
-    agent = Leader(id=f"{faction_id}_agent",
-                   type=LeaderTypes.AGENT,
-                   name=agent_d["name"],
-                   description=agent_d["description"]
-                   )
+    if type(agent_d) is not list:
+        agent = [Leader(id=f"{faction_id}_agent",
+                       type=LeaderTypes.AGENT,
+                       name=agent_d["name"],
+                       description=agent_d["description"]
+                       )]
+    else:
+        agent = []
+        for a in agent_d:
+            current_agent = Leader(id=f"{faction_id}_agent_{a['id']}",
+                       type=LeaderTypes.AGENT,
+                       name=a["name"],
+                       description=a["description"]
+                       )
+            agent.append(current_agent)
 
     # Commander
     commander_d = faction_dict.pop("commander")
@@ -170,6 +189,7 @@ def load_faction(faction_id, faction_dict) -> Faction:
                    description=hero_d["description"],
                    unlocking="Имейте 3 выполненные цели."
                    )
+
 
 
     baking_faction = Faction(
@@ -195,5 +215,8 @@ def load_faction(faction_id, faction_dict) -> Faction:
 
         starting_technologies=tech_list,
     )
+
+    if baking_faction.id == "nomad":
+        print(baking_faction.faction_specific_units[0].upgrade.name)
 
     return baking_faction

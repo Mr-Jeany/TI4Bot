@@ -19,6 +19,7 @@ from utils import AdditionalInfoCallback
 from models.emoji import UnitsEmoji, CardsEmoji, LeadersEmoji
 
 FACTIONS: dict | None = None
+PROMISSORY_NOTES: dict | None = None
 
 BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 
@@ -72,31 +73,53 @@ async def load_faction_handler(message: Message) -> None:
     if faction_object.faction_specific_units:
         button_row = []
         for unit in faction_object.faction_specific_units:
-            button_row.append(
-                InlineKeyboardButton(text=unit.name,
-                                     callback_data=AdditionalInfoCallback(type=unit.unit_type, faction=faction_name).pack(),
-                                     icon_custom_emoji_id=getattr(UnitsEmoji, unit.unit_type).id)
-            )
-        buttons.append(button_row)
+            if unit.unit_type != "flagship":
+                button_row.append(
+                    InlineKeyboardButton(text=unit.name,
+                                         callback_data=AdditionalInfoCallback(type=unit.unit_type, faction=faction_name).pack(),
+                                         icon_custom_emoji_id=getattr(UnitsEmoji, unit.unit_type).id)
+                )
+        if button_row:
+            buttons.append(button_row)
 
     # PN
     button_row = []
-    button_row.append(
-        InlineKeyboardButton(text=faction_object.promissory_note.name,
-                             callback_data=AdditionalInfoCallback(type="promissory_note", faction=faction_name).pack(),
-                             icon_custom_emoji_id=CardsEmoji.prom_note.id)
-    )
+    for prom_note_unit in faction_object.promissory_note:
+        button_row.append(
+            InlineKeyboardButton(text=prom_note_unit.name,
+                                 callback_data=AdditionalInfoCallback(type=prom_note_unit.id, faction=faction_name).pack(),
+                                 icon_custom_emoji_id=CardsEmoji.prom_note.id)
+        )
     buttons.append(button_row)
 
     # Leaders
-    button_row = []
-    for leader in [faction_object.agent, faction_object.commander, faction_object.hero]:
-        button_row.append(
-            InlineKeyboardButton(text=leader.name,
-                                 callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
-                                 icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
-        )
-    buttons.append(button_row)
+    if len(faction_object.agent) == 1:
+        button_row = []
+        for leader in [faction_object.agent[0], faction_object.commander, faction_object.hero]:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
+
+    else:
+        button_row = []
+        for leader in faction_object.agent:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
+        button_row = []
+        for leader in [faction_object.commander, faction_object.hero]:
+            button_row.append(
+                InlineKeyboardButton(text=leader.name,
+                                     callback_data=AdditionalInfoCallback(type=leader.type, faction=faction_name).pack(),
+                                     icon_custom_emoji_id=getattr(LeadersEmoji, leader.type).id)
+            )
+        buttons.append(button_row)
 
 
     keyboard_inline = InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -132,7 +155,8 @@ async def shuffle_things_handler(message: Message) -> None:
         buttons_raw.append(InlineKeyboardButton(
             text=faction_object.name,
             callback_data=AdditionalInfoCallback(type="ban", faction=faction_name).pack(),
-            icon_custom_emoji_id=faction_object.emoji.id
+            icon_custom_emoji_id=faction_object.emoji.id,
+            # style="primary"
         ))
 
     buttons_cooked = list(itertools.batched(buttons_raw, 5))
@@ -150,7 +174,8 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
 
     faction_object = FACTIONS[faction]
 
-    if callback_type == "flagship":
+    # TODO: Fix this shit with Nomad
+    if callback_type == "flagship" and faction_object.id != "nomad":
         await callback_query.message.delete()
         await callback_query.message.answer_rich(faction_object.flagship.rich_info)
 
@@ -174,6 +199,10 @@ async def extra_info_callback_handler(callback_query: CallbackQuery, callback_da
         await callback_query.message.delete()
         await callback_query.message.answer_rich(faction_object.hero.full)
 
+    elif "pn" in callback_type:
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(PROMISSORY_NOTES[callback_type].rich_info)
+
     else:
         await callback_query.message.delete()
 
@@ -196,13 +225,19 @@ async def catch_emoji_handler(message: Message) -> None:
 
 
 async def main() -> None:
-    global FACTIONS
+    global FACTIONS, PROMISSORY_NOTES
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     # TODO: Add loader for all faction and in the future for all techs etc etc
 
     FACTIONS = await load_all_factions(json.load(open("data/factions.json", encoding="utf-8")))
+    FACTIONS = dict(sorted(FACTIONS.items(), key=lambda item: item[1].name))
+
+    PROMISSORY_NOTES = {}
+    for faction in FACTIONS.values():
+        for promissory_notes in faction.promissory_note:
+            PROMISSORY_NOTES[promissory_notes.id] = promissory_notes
 
     # And the run events dispatching
     await dp.start_polling(bot)

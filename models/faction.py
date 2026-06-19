@@ -28,9 +28,9 @@ class Faction:
 
     flagship: Unit
     mech: Unit
-    promissory_note: PromissoryNote
+    promissory_note: list[PromissoryNote]
 
-    agent: Leader
+    agent: list[Leader]
     commander: Leader
     hero: Leader
 
@@ -52,11 +52,11 @@ class Faction:
                  flagship: Unit,
                  mech: Unit,
 
-                 agent: Leader,
+                 agent: list[Leader],
                  commander: Leader,
                  hero: Leader,
 
-                 promissory_note: PromissoryNote):
+                 promissory_note: list[PromissoryNote]):
         # Correct way to create
         self.id = id
         self.name = name
@@ -85,10 +85,13 @@ class Faction:
         self.mech.faction = self
 
         self.promissory_note = promissory_note
-        self.promissory_note.faction = self
+        for pn in self.promissory_note:
+            pn.faction = self
+
 
         self.agent = agent
-        self.agent.faction = self
+        for ag in self.agent:
+            ag.faction = self
 
         self.commander = commander
         self.commander.faction = self
