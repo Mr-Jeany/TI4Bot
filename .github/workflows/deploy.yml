@@ -74,11 +74,11 @@ jobs:
                 -u '${{ github.actor }}' \
                 --password-stdin &&
 
-              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker-compose pull &&
+              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker compose pull
 
-              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker-compose down --remove-orphans || true &&
-
-              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker-compose up -d --force-recreate
+              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker compose down --remove-orphans || true
+              
+              sudo env BOT_IMAGE='$BOT_IMAGE:latest' BOT_TOKEN='${{ secrets.BOT_TOKEN }}' docker compose up -d --force-recreate
             "
 
       - name: Prune images
