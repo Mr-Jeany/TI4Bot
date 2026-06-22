@@ -1071,29 +1071,29 @@
                     "count": 1
                 },
                 {
+                    "id": "dreadnought",
+                    "type": "Дредноут",
+                    "count": 1
+                },
+                {
                     "id": "cruiser",
                     "type": "Крейсер",
-                    "count": 2
+                    "count": 1
                 },
                 {
                     "id": "fighter",
                     "type": "Истребитель",
-                    "count": 3
+                    "count": 2
                 },
                 {
                     "id": "infantry",
                     "type": "Пехота",
-                    "count": 4
+                    "count": 2
                 },
                 {
                     "id": "space_dock",
                     "type": "База",
                     "count": 1
-                },
-                {
-                    "id": "pds",
-                    "type": "ПСО",
-                    "count": 2
                 }
             ],
             "abilities": [
