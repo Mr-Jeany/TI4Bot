@@ -1,0 +1,270 @@
+{
+    "items": [
+        {
+            "id": "18",
+            "planets": ["meactol_rex"],
+            "color": null,
+            "anomaly": false,
+            "extra": null,
+            "image_name": "18_MR"
+        },
+
+        {
+            "id": "19",
+            "planets": ["wellon"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "19_Wellon"
+        },
+        {
+            "id": "20",
+            "planets": ["vefut_ii"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "20_VefutII"
+        },
+        {
+            "id": "21",
+            "planets": ["thibah"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "21_Thibah"
+        },
+        {
+            "id": "22",
+            "planets": ["tarmann"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "22_Tarmann"
+        },
+        {
+            "id": "23",
+            "planets": ["saudor"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "23_Saudor"
+        },
+        {
+            "id": "24",
+            "planets": ["mehar_xull"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "24_MeharXull"
+        },
+        {
+            "id": "25",
+            "planets": ["quann"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": ["beta"],
+            "image_name": "25_Quann"
+        },
+        {
+            "id": "26",
+            "planets": ["lodor"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": ["alpha"],
+            "image_name": "26_Lodor"
+        },
+        {
+            "id": "27",
+            "planets": ["new_albion"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "27_NewAlbion"
+        },
+        {
+            "id": "28",
+            "planets": ["tequran", "torkan"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "28_Tequran"
+        },
+        {
+            "id": "29",
+            "planets": ["qucenn", "rarron"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "29_Qucenn"
+        },
+        {
+            "id": "30",
+            "planets": ["mellon", "zohbat"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "30_Mellon"
+        },
+        {
+            "id": "31",
+            "planets": ["lazar", "sakulag"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "31_Lazar"
+        },
+        {
+            "id": "32",
+            "planets": ["dal_bootha", "xxehan"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "32_DalBootha"
+        },
+        {
+            "id": "33",
+            "planets": ["coorneeq", "resculon"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "33_Coorneeq"
+        },
+        {
+            "id": "34",
+            "planets": ["centauri", "gral"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "34_Centauri"
+        },
+        {
+            "id": "35",
+            "planets": ["bereg", "lirta_iv"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "35_Bereg"
+        },
+        {
+            "id": "36",
+            "planets": ["arnor", "lor"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "32_Arnor"
+        },
+        {
+            "id": "37",
+            "planets": ["arinam", "meer"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "37_Arinam"
+        },
+        {
+            "id": "38",
+            "planets": ["abyz", "fria"],
+            "color": "blue",
+            "anomaly": false,
+            "extra": null,
+            "image_name": "38_Abyz"
+        },
+        {
+            "id": "39",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["alpha"],
+            "image_name": "39_AphaWH"
+        },
+        {
+            "id": "40",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["beta"],
+            "image_name": "40_BetaWH"
+        },
+        {
+            "id": "41",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["rift"],
+            "image_name": "41_GravityRift"
+        },
+        {
+            "id": "42",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["nebula"],
+            "image_name": "42_Nebula"
+        },
+        {
+            "id": "43",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["supernova"],
+            "image_name": "43_Supernova"
+        },
+        {
+            "id": "44",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["asteroid"],
+            "image_name": "44_Asteroids"
+        },
+        {
+            "id": "45",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["asteroid"],
+            "image_name": "45_Asteroids"
+        },
+        {
+            "id": "46",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["void"],
+            "image_name": "46_Void"
+        },
+        {
+            "id": "47",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["void"],
+            "image_name": "47_Void"
+        },
+        {
+            "id": "48",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["void"],
+            "image_name": "48_Void"
+        },
+        {
+            "id": "49",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["void"],
+            "image_name": "49_Void"
+        },
+        {
+            "id": "50",
+            "planets": null,
+            "color": "red",
+            "anomaly": false,
+            "extra": ["void"],
+            "image_name": "50_Void"
+        }
+
+    ]
+}
