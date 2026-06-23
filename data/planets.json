@@ -1,6 +1,16 @@
 {
     "items": [
         {
+            "id": "mecatol_rex",
+            "name": "Mecatol Rex",
+            "resource": 1,
+            "influence": 6,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+
+        {
             "id": "abyz",
             "name": "Abyz",
             "resource": 3,
