@@ -333,8 +333,6 @@ async def ban_order_handler(message: Message) -> None:
         "current_person_index": 0
     }
 
-    print(ban_sessions)
-
     buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
 
     generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid])
@@ -352,14 +350,21 @@ async def ban_callback_handler(callback_query: CallbackQuery, callback_data: Ban
         generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid], comment="## Это фракция уже в бане!")
         buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
 
-        try:
-            await callback_query.message.edit_text(rich_message=generated_message,
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(rich_message=generated_message,
                                                      reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
-        except TelegramBadRequest as e:
-            if "message is not modified" not in str(e):
-                raise
 
         return
+
+    elif ban in session["immune_factions"]:
+        generated_message = await ban_message_generator(FACTIONS, uuid, ban_sessions[uuid],
+                                                        comment="## Эту фракцию нельзя забанить.")
+        buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
+
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(rich_message=generated_message,
+                                                 reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
+
 
 
     session["banned_factions"].append(ban)
@@ -368,7 +373,8 @@ async def ban_callback_handler(callback_query: CallbackQuery, callback_data: Ban
         generated_message = await banned_final_message(FACTIONS, uuid, ban_sessions[uuid])
 
         try:
-            await callback_query.message.edit_text(rich_message=generated_message)
+            await callback_query.message.delete()
+            await callback_query.message.answer_rich(rich_message=generated_message)
         except TelegramBadRequest as e:
             if "message is not modified" not in str(e):
                 raise
@@ -382,12 +388,12 @@ async def ban_callback_handler(callback_query: CallbackQuery, callback_data: Ban
     buttons_cooked = await ban_buttons_generator(FACTIONS, uuid, ban_sessions[uuid])
 
     try:
-        await callback_query.message.edit_text(rich_message=generated_message,
+        await callback_query.message.delete()
+        await callback_query.message.answer_rich(rich_message=generated_message,
                                              reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons_cooked))
     except TelegramBadRequest as e:
         if "message is not modified" not in str(e):
             raise
-
 
 @dp.message(Command("catch_emoji"))
 async def catch_emoji_handler(message: Message) -> None:
@@ -400,6 +406,7 @@ async def catch_emoji_handler(message: Message) -> None:
 
             await message.answer(f'...<tg-emoji emoji-id="{custom_emoji_id}">{custom_emoji_symbol}</tg-emoji>...\n<code>{custom_emoji_id}</code> - <code>{custom_emoji_symbol}</code>')
 
+@dp.message(Command)
 
 async def main() -> None:
     global FACTIONS, PROMISSORY_NOTES
