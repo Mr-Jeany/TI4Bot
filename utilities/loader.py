@@ -52,7 +52,8 @@ def load_faction(faction_id, faction_dict) -> Faction:
     for planet in faction_dict.pop("planets"):
         planet_list.append(Planet(name=planet["name"],
                                   resource=planet["resource"],
-                                  influence=planet["influence"]))
+                                  influence=planet["influence"],
+                                  is_home_system=True))
 
     # Creating units
     unit_list = []
