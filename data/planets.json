@@ -1,0 +1,565 @@
+{
+    "items": [
+        {
+            "id": "abyz",
+            "name": "Abyz",
+            "resource": 3,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "fria",
+            "name": "Fria",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "arinam",
+            "name": "Arinam",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "meer",
+            "name": "Meer",
+            "resource": 0,
+            "influence": 4,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "red"
+        },
+        {
+            "id": "arnor",
+            "name": "Arnor",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "lor",
+            "name": "Lor",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "bereg",
+            "name": "Bereg",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "lirta_iv",
+            "name": "Lirta IV",
+            "resource": 2,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "centauri",
+            "name": "Centauri",
+            "resource": 1,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "gral",
+            "name": "Gral",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "blue"
+        },
+        {
+            "id": "coorneeq",
+            "name": "Coorneeq",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "resculon",
+            "name": "Resculon",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "dal_bootha",
+            "name": "Dal Bootha",
+            "resource": 0,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "xxehan",
+            "name": "Xxehan",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "lazar",
+            "name": "Lazar",
+            "resource": 1,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "yellow"
+        },
+        {
+            "id": "sakulag",
+            "name": "Sakulag",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "lodor",
+            "name": "Lodor",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "mehar_xull",
+            "name": "Mehar Xull",
+            "resource": 1,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "red"
+        },
+        {
+            "id": "mellon",
+            "name": "Mellon",
+            "resource": 0,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "zohbat",
+            "name": "Zohbat",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "new_albion",
+            "name": "New Albion",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "green"
+        },
+        {
+            "id": "starpoint",
+            "name": "Starpoint",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "quann",
+            "name": "Quann",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "qucenn",
+            "name": "Qucen'n",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "rarron",
+            "name": "Rarron",
+            "resource": 0,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "saudor",
+            "name": "Saudor",
+            "resource": 2,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "tarmann",
+            "name": "Tar'Mann",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "green"
+        },
+        {
+            "id": "tequran",
+            "name": "Tequ'ran",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "torkan",
+            "name": "Torkan",
+            "resource": 0,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "thibah",
+            "name": "Thibah",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "blue"
+        },
+        {
+            "id": "vefut_ii",
+            "name": "Vefut II",
+            "resource": 2,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "wellon",
+            "name": "Wellon",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "yellow"
+        },
+
+
+
+        {
+            "id": "archon_vail",
+            "name": "Archon Vail",
+            "resource": 1,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "blue"
+        },
+        {
+            "id": "perimetr",
+            "name": "Perimetr",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "ang",
+            "name": "Ang",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "red"
+        },
+        {
+            "id": "sem_lore",
+            "name": "Sem-Lore",
+            "resource": 3,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "yellow"
+        },
+        {
+            "id": "vorhal",
+            "name": "Vorhal",
+            "resource": 0,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "green"
+        },
+        {
+            "id": "atlas",
+            "name": "Atlas",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "primor",
+            "name": "Primor",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": true,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "hopes_end",
+            "name": "Hope's End",
+            "resource": 3,
+            "influence": 0,
+            "is_legendary": true,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "cormund",
+            "name": "Cormund",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "everra",
+            "name": "Everra",
+            "resource": 3,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "jeol_ir",
+            "name": "Jeol Ir",
+            "resource": 2,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "accoen",
+            "name": "Accoen",
+            "resource": 2,
+            "influence": 3,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "kraag",
+            "name": "Kraag",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "siig",
+            "name": "Siig",
+            "resource": 0,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "bakal",
+            "name": "Ba'kal",
+            "resource": 3,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "allo_prima",
+            "name": "Allo Prima",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "lisis",
+            "name": "Lisis",
+            "resource": 2,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "velnor",
+            "name": "Velnor",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "red"
+        },
+        {
+            "id": "cealdri",
+            "name": "Cealdri",
+            "resource": 0,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "yellow"
+        },
+        {
+            "id": "xanhact",
+            "name": "Xanhact",
+            "resource": 0,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "vega_major",
+            "name": "Vega Major",
+            "resource": 2,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "vega_minor",
+            "name": "Vega Minor",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "blue"
+        },
+        {
+            "id": "abaddon",
+            "name": "Abaddon",
+            "resource": 1,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "ashtroth",
+            "name": "Ashtroth",
+            "resource": 2,
+            "influence": 0,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "loki",
+            "name": "Loki",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "rigel_i",
+            "name": "Rigel I",
+            "resource": 0,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "rigel_ii",
+            "name": "Rigel II",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "rigel_iii",
+            "name": "Rigel III",
+            "resource": 1,
+            "influence": 1,
+            "is_legendary": false,
+            "is_home_system": false,
+            "techskip": "green"
+        },
+        {
+            "id": "mallice",
+            "name": "Mallice",
+            "resource": 0,
+            "influence": 3,
+            "is_legendary": true,
+            "is_home_system": false,
+            "techskip": null
+        },
+        {
+            "id": "mirage",
+            "name": "Mirage",
+            "resource": 1,
+            "influence": 2,
+            "is_legendary": true,
+            "is_home_system": false,
+            "techskip": null
+        }
+    ]
+}

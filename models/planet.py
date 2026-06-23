@@ -10,6 +10,7 @@ class Techskip(str, Enum):
 
 @dataclass
 class Planet:
+    id: str
     name: str
     resource: int
     influence: int
