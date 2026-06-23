@@ -2,8 +2,8 @@
     "items": [
         {
             "id": "18",
-            "planets": ["meactol_rex"],
-            "color": null,
+            "planets": ["mecatol_rex"],
+            "color": "blue",
             "anomaly": false,
             "extra": null,
             "image_name": "18_MR"
@@ -123,11 +123,11 @@
         },
         {
             "id": "33",
-            "planets": ["coorneeq", "resculon"],
+            "planets": ["corneeq", "resculon"],
             "color": "blue",
             "anomaly": false,
             "extra": null,
-            "image_name": "33_Coorneeq"
+            "image_name": "33_Corneeq"
         },
         {
             "id": "34",
@@ -151,7 +151,7 @@
             "color": "blue",
             "anomaly": false,
             "extra": null,
-            "image_name": "32_Arnor"
+            "image_name": "36_Arnor"
         },
         {
             "id": "37",
@@ -175,7 +175,7 @@
             "color": "red",
             "anomaly": false,
             "extra": ["alpha"],
-            "image_name": "39_AphaWH"
+            "image_name": "39_AlphaWH"
         },
         {
             "id": "40",

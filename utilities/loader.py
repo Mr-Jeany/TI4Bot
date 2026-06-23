@@ -1,17 +1,20 @@
 import asyncio
 
+from PIL import Image
+
 from models.ability import Ability
 from models.faction import Faction
 from models.leader import Leader, LeaderTypes
-from models.planet import Planet
+from models.planet import Planet, Techskip
 from models.promissory_note import PromissoryNote
 from models.technology import Technology
+from models.tile import Tile, TileType
 from models.unit import Unit, UnitType
 from models.emoji import CustomEmoji
 
 from datetime import datetime
 
-async def load_all_factions(faction_json_converted: dict) -> dict[str, Faction]:
+async def load_all_factions(faction_json_converted: dict, full_logging: bool = False) -> dict[str, Faction]:
     print(f"[{datetime.now()}] Loading factions...")
 
     # Limit for threads used
@@ -22,9 +25,11 @@ async def load_all_factions(faction_json_converted: dict) -> dict[str, Faction]:
         faction_id = item["id"]
 
         async with semaphore:
-            print(f"[{datetime.now()}] Loading {faction_id}...")
+            if full_logging: print(f"[{datetime.now()}] Loading {faction_id}...")
+
             faction = await asyncio.to_thread(load_faction, faction_id, item)
-            print(f"[{datetime.now()}] Finished loading {faction_id}.")
+
+            if full_logging: print(f"[{datetime.now()}] Finished loading {faction_id}.")
         return faction_id, faction
 
 
@@ -50,7 +55,8 @@ def load_faction(faction_id, faction_dict) -> Faction:
     # Creating planets
     planet_list = []
     for planet in faction_dict.pop("planets"):
-        planet_list.append(Planet(name=planet["name"],
+        planet_list.append(Planet(id="", # TODO: id
+                                  name=planet["name"],
                                   resource=planet["resource"],
                                   influence=planet["influence"],
                                   is_home_system=True))
@@ -217,7 +223,80 @@ def load_faction(faction_id, faction_dict) -> Faction:
         starting_technologies=tech_list,
     )
 
-    if baking_faction.id == "nomad":
-        print(baking_faction.faction_specific_units[0].upgrade.name)
-
     return baking_faction
+
+def load_planets(planet_json_converted: dict, full_logging: bool = False) -> dict[str, Planet]:
+    print(f"[{datetime.now()}] Loading planets...")
+
+    planets = {}
+
+    for item in planet_json_converted["items"]:
+        planet_id = item["id"]
+
+        if full_logging: print(f"[{datetime.now()}] Loading {planet_id}...")
+
+        techskip = item["techskip"]
+        if techskip:
+            techskip = Techskip(techskip)
+
+        planets[planet_id] = Planet(
+            id=planet_id,
+            name=item["name"],
+            resource=item["resource"],
+            influence=item["influence"],
+            is_home_system=item["is_home_system"],
+            is_legendary=item["is_legendary"],
+            techskip=techskip,
+        )
+
+        if full_logging: print(f"[{datetime.now()}] Finished loading {planet_id}.")
+
+    print(f"[{datetime.now()}] Finished loading all planets.")
+
+    return planets
+
+async def load_tiles(tiles_json_converted: dict, planets: dict[str, Planet], full_logging: bool = False) -> dict[str, Tile]:
+    print(f"[{datetime.now()}] Loading tiles...")
+
+    semaphore = asyncio.Semaphore(5)
+
+    async def load_one(item: dict):
+        if full_logging: print(f"[{datetime.now()}] Loading {item['id']}...")
+
+        async with semaphore:
+            return await asyncio.to_thread(
+                load_tile,
+                item,
+                planets,
+            )
+
+    results = await asyncio.gather(
+        *(load_one(item) for item in tiles_json_converted["items"])
+    )
+
+    print(f"[{datetime.now()}] Finished loading all tiles...")
+    return dict(results)
+
+def load_tile(item: dict, planets_dict: dict[str, Planet]) -> tuple[str, Tile]:
+    if item["planets"]:
+        tile_planets = [
+            planets_dict[name]
+            for name in item["planets"]
+        ]
+    else:
+        tile_planets = []
+
+    with Image.open(f"data/tiles/{item['image_name']}.png") as img:
+        image = img.copy()
+
+    tile = Tile(
+        id=item["id"],
+        planets=tile_planets,
+        is_home_system=False,
+        tile_type=TileType(item["color"]), # TODO: Fix mecatol with blue color
+        is_anomaly=item["anomaly"],
+        extra=item["extra"],
+        image=image,
+    )
+
+    return item["id"], tile

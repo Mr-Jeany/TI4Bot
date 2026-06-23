@@ -16,6 +16,7 @@ class Tile:
     is_home_system: int
     tile_type: TileType
     is_anomaly: bool = False
+    extra: list[str] | None = None
     image: Image.Image | None = None
 
     contains_legendary: bool = False

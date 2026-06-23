@@ -15,14 +15,17 @@ from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, C
 
 from technologies import get_technology
 from utilities.bans.generators import ban_message_generator, ban_buttons_generator, banned_final_message
-from utilities.loader import load_all_factions
+from utilities.loader import load_all_factions, load_planets, load_tiles
 from utils import AdditionalInfoCallback, BanCallback, ViewFactionsCallback
 from models.emoji import UnitsEmoji, CardsEmoji, LeadersEmoji
 from uuid import uuid4
 
 FACTIONS: dict | None = None
 PROMISSORY_NOTES: dict | None = None
+TILES: dict | None = None
 ban_sessions: dict = {}
+
+PLANETS: dict | None = None
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
@@ -406,10 +409,9 @@ async def catch_emoji_handler(message: Message) -> None:
 
             await message.answer(f'...<tg-emoji emoji-id="{custom_emoji_id}">{custom_emoji_symbol}</tg-emoji>...\n<code>{custom_emoji_id}</code> - <code>{custom_emoji_symbol}</code>')
 
-@dp.message(Command)
 
 async def main() -> None:
-    global FACTIONS, PROMISSORY_NOTES
+    global FACTIONS, PROMISSORY_NOTES, PLANETS, TILES
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
@@ -417,6 +419,10 @@ async def main() -> None:
 
     FACTIONS = await load_all_factions(json.load(open("data/factions.json", encoding="utf-8")))
     FACTIONS = dict(sorted(FACTIONS.items(), key=lambda item: item[1].name))
+
+    PLANETS = load_planets(json.load(open("data/planets.json", encoding="utf-8")))
+
+    TILES = await load_tiles(json.load(open("data/tiles.json", encoding="utf-8")), PLANETS)
 
     PROMISSORY_NOTES = {}
     for faction in FACTIONS.values():

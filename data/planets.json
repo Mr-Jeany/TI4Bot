@@ -101,8 +101,8 @@
             "techskip": "blue"
         },
         {
-            "id": "coorneeq",
-            "name": "Coorneeq",
+            "id": "corneeq",
+            "name": "Corneeq",
             "resource": 1,
             "influence": 2,
             "is_legendary": false,
