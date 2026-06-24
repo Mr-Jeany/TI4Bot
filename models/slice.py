@@ -14,8 +14,9 @@ class Slice:
     tiles: list[Tile | None]
 
 
-    def generate_image(self, images) -> Image.Image:
-        width, height = images[0].size
+    def generate_image(self) -> Image.Image:
+        images = [t.image if t is not None else None for t in self.tiles]
+        width, height = images[1].size
         center_width = int(width / 4 * 3)
 
         coordinates = {
@@ -33,6 +34,8 @@ class Slice:
         )
 
         for index in range(len(images)):
+            if images[index] is None:
+                continue
             base.alpha_composite(images[index], coordinates[index])
 
         return base

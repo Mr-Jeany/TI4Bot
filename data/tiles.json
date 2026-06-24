@@ -3,7 +3,7 @@
         {
             "id": "18",
             "planets": ["mecatol_rex"],
-            "color": "blue",
+            "color": "nothing",
             "anomaly": false,
             "extra": null,
             "image_name": "18_MR"

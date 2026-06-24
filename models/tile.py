@@ -8,6 +8,7 @@ from models.planet import Planet
 class TileType(str, Enum):
     RED = "red" # no planets
     BLUE = "blue" # with planet(s)
+    NOTHING = "nothing" # pretty much anything else (hyperlanes and mecatol)
 
 @dataclass
 class Tile:
